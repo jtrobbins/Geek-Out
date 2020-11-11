@@ -1,7 +1,7 @@
 package com.example.geekout
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -18,6 +18,7 @@ class JoinGameActivity : AppCompatActivity() {
     private lateinit var joinButton: Button
     private lateinit var uid: String
     private lateinit var code: String
+    private var success = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,7 @@ class JoinGameActivity : AppCompatActivity() {
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
 
         codeEditTextView = findViewById(R.id.enter_code)
-        joinButton = findViewById(R.id.createGame)
+        joinButton = findViewById(R.id.joinGame)
 
         uid = FirebaseAuth.getInstance().currentUser!!.uid
 
@@ -39,13 +40,13 @@ class JoinGameActivity : AppCompatActivity() {
     }
 
     private fun checkGameExists() {
-        databaseGames.child(code).addValueEventListener(object :
+        databaseGames.child(code).addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     checkGameJoinable()
                 } else {
-                    Toast.makeText(applicationContext, "Unable to join game. Invalid code.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@JoinGameActivity, "Unable to join game. Invalid code.", Toast.LENGTH_LONG).show()
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {
@@ -55,14 +56,14 @@ class JoinGameActivity : AppCompatActivity() {
     }
 
     private fun checkGameJoinable() {
-        databaseGames.child(code).child("in_progress").addValueEventListener(object :
+        databaseGames.child(code).child("in_progress").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val inProgress = dataSnapshot.getValue(Int::class.java)
                 if (inProgress == 0) {
                     joinGame()
                 } else {
-                    Toast.makeText(applicationContext, "Unable to join. Game in progress.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@JoinGameActivity, "Unable to join. Game in progress.", Toast.LENGTH_LONG).show()
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {
@@ -72,12 +73,15 @@ class JoinGameActivity : AppCompatActivity() {
     }
 
     private fun joinGame() {
-        databaseUsers.child(uid).child("username").addValueEventListener(object :
+        databaseUsers.child(uid).child("username").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val username = dataSnapshot.value.toString()
                 val player = Player(username)
                 databaseGames.child(code).child("players").child(uid).setValue(player)
+                val readyIntent = Intent(this@JoinGameActivity, StartGameActivity::class.java)
+                readyIntent.putExtra("code", code)
+                startActivity(readyIntent)
             }
             override fun onCancelled(databaseError: DatabaseError) {
                 // do nothing

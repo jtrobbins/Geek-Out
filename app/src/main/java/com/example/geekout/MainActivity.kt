@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
 
         rulesButton = findViewById(R.id.rulesButton)
         rulesButton.setOnClickListener {
-            val rulesIntent = Intent(this, NotImplementedActivity::class.java)
+            val rulesIntent = Intent(this, RulesActivity::class.java)
             startActivity(rulesIntent)
         }
     }

@@ -1,6 +1,8 @@
 package com.example.geekout
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -13,6 +15,7 @@ class NewGameActivity : AppCompatActivity() {
     private lateinit var databaseUsers: DatabaseReference
     private lateinit var databaseGames: DatabaseReference
     private lateinit var codeTextView: TextView
+    private lateinit var createButton: Button
     private lateinit var uid: String
     private lateinit var code: String
 
@@ -25,17 +28,24 @@ class NewGameActivity : AppCompatActivity() {
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
 
         codeTextView = findViewById(R.id.code)
+        createButton = findViewById(R.id.createGame)
 
         code = createCode()
         codeTextView.text = code
         uid = FirebaseAuth.getInstance().currentUser!!.uid
 
-        addGame()
+        createButton.setOnClickListener {
+            addGame()
+
+            val readyIntent = Intent(this, StartGameActivity::class.java)
+            readyIntent.putExtra("code", code)
+            startActivity(readyIntent)
+        }
     }
 
     private fun addGame() {
         databaseGames.child(code).child("in_progress").setValue(0)
-        databaseUsers.child(uid).child("username").addValueEventListener(object : ValueEventListener {
+        databaseUsers.child(uid).child("username").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val username = dataSnapshot.value.toString()
                 val player = Player(username)

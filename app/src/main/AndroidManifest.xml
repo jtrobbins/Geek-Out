@@ -24,7 +24,7 @@
         <activity android:name="MainActivity"/>
         <activity android:name="NewGameActivity"/>
         <activity android:name="JoinGameActivity"/>
-        <activity android:name="ReadyActivity"/>
+        <activity android:name="StartGameActivity"/>
         <activity android:name="NotImplementedActivity"/>
     </application>
 

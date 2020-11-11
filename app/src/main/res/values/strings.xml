@@ -17,5 +17,6 @@
     <string name="create_game">Create</string>
     <string name="code_hint">Code</string>
     <string name="join_game">Join</string>
+    <string name="ready">Start</string>
 
 </resources>
