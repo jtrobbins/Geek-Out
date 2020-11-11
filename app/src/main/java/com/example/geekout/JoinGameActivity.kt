@@ -1,8 +1,10 @@
 package com.example.geekout
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -32,8 +34,41 @@ class JoinGameActivity : AppCompatActivity() {
 
         joinButton.setOnClickListener {
             code = codeEditTextView.text.toString()
-            joinGame()
+            checkGameExists()
         }
+    }
+
+    private fun checkGameExists() {
+        databaseGames.child(code).addValueEventListener(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    checkGameJoinable()
+                } else {
+                    Toast.makeText(applicationContext, "Unable to join game. Invalid code.", Toast.LENGTH_LONG).show()
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // do nothing
+            }
+        })
+    }
+
+    private fun checkGameJoinable() {
+        databaseGames.child(code).child("in_progress").addValueEventListener(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val inProgress = dataSnapshot.getValue(Int::class.java)
+                if (inProgress == 0) {
+                    joinGame()
+                } else {
+                    Toast.makeText(applicationContext, "Unable to join. Game in progress.", Toast.LENGTH_LONG).show()
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // do nothing
+            }
+        })
     }
 
     private fun joinGame() {
