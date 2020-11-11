@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "341572199341",
+    "firebase_url": "https://geek-out-c918e.firebaseio.com",
+    "project_id": "geek-out-c918e",
+    "storage_bucket": "geek-out-c918e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:341572199341:android:7f07e87fcee4d88de6f724",
+        "android_client_info": {
+          "package_name": "com.example.geekout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "341572199341-4uul6bful144mhovrdfjufjef93micfo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.geekout",
+            "certificate_hash": "8db18d6fe5c0f49fd8f16ee59efde588d06e7e50"
+          }
+        },
+        {
+          "client_id": "341572199341-5s7mhmushvpsh7ngb07m34og0qncufb0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD__loFKlsE4ZhMEYFUX_d_yz-Z5KbtFNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "341572199341-5s7mhmushvpsh7ngb07m34og0qncufb0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
