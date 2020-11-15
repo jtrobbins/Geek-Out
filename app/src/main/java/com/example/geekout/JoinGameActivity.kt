@@ -18,7 +18,6 @@ class JoinGameActivity : AppCompatActivity() {
     private lateinit var joinButton: Button
     private lateinit var uid: String
     private lateinit var code: String
-    private var success = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,8 +58,8 @@ class JoinGameActivity : AppCompatActivity() {
         databaseGames.child(code).child("in_progress").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val inProgress = dataSnapshot.getValue(Int::class.java)
-                if (inProgress == 0) {
+                val inProgress = dataSnapshot.getValue(Boolean::class.java) as Boolean
+                if (!inProgress) {
                     joinGame()
                 } else {
                     Toast.makeText(this@JoinGameActivity, "Unable to join. Game in progress.", Toast.LENGTH_LONG).show()

@@ -44,7 +44,7 @@ class NewGameActivity : AppCompatActivity() {
     }
 
     private fun addGame() {
-        databaseGames.child(code).child("in_progress").setValue(0)
+        databaseGames.child(code).child("in_progress").setValue(false)
         databaseUsers.child(uid).child("username").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val username = dataSnapshot.value.toString()
