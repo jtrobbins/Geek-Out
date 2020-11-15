@@ -5,16 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ImageButton
+import android.widget.Button
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mDialog: DialogFragment
-    private lateinit var newGameButton: ImageButton
-    private lateinit var joinGameButton: ImageButton
-    private lateinit var rulesButton: ImageButton
+    private lateinit var newGameButton: Button
+    private lateinit var joinGameButton: Button
+    private lateinit var rulesButton: Button
+    private lateinit var userSettingsButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,12 @@ class MainActivity : AppCompatActivity() {
         rulesButton.setOnClickListener {
             val rulesIntent = Intent(this, RulesActivity::class.java)
             startActivity(rulesIntent)
+        }
+
+        userSettingsButton = findViewById(R.id.userSettingsButton)
+        userSettingsButton.setOnClickListener {
+            val userSettingsIntent = Intent(this, UserSettingsActivity::class.java)
+            startActivity(userSettingsIntent)
         }
     }
 

@@ -3,6 +3,7 @@
     <string name="help">Help</string>
     <string name="newGameButtonDesc">New Game Button</string>
     <string name="joinGameButtonDesc">Join Game Button</string>
+    <string name="userSettingButtonDesc">User Settings Button</string>
     <string name="rulesButtonDesc">Rules Button</string>
     <string name="login">Login</string>
     <string name="account_login">Account login</string>
@@ -13,10 +14,11 @@
     <string name="email_hint">Email</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
+    <string name ="edit_profile">Edit Profile</string>
     <string name="code">Code</string>
     <string name="create_game">Create</string>
     <string name="code_hint">Code</string>
     <string name="join_game">Join</string>
     <string name="ready">Start</string>
-
+    <string name="save">Save</string>
 </resources>

@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@id/appBarLayout"
         app:layout_constraintBottom_toTopOf="@id/layout3">
 
-        <ImageButton
+        <Button
             android:id="@+id/newGameButton"
             android:layout_width="135dp"
             android:layout_height="135dp"
@@ -45,6 +45,7 @@
             android:layout_centerVertical="true"
             android:background="@color/colorPrimary"
             android:elevation="10dp"
+            android:text="New Game"
             android:contentDescription="@string/newGameButtonDesc" />
 
     </RelativeLayout>
@@ -60,7 +61,7 @@
         app:layout_constraintTop_toBottomOf="@id/appBarLayout"
         app:layout_constraintBottom_toTopOf="@id/layout4">
 
-        <ImageButton
+        <Button
             android:id="@+id/joinGameButton"
             android:layout_width="135dp"
             android:layout_height="135dp"
@@ -70,6 +71,7 @@
             android:layout_centerVertical="true"
             android:background="@color/colorPrimary"
             android:elevation="10dp"
+            android:text="Join Game"
             android:contentDescription="@string/joinGameButtonDesc" />
 
     </RelativeLayout>
@@ -85,7 +87,7 @@
         app:layout_constraintTop_toBottomOf="@id/layout1"
         app:layout_constraintBottom_toTopOf="@id/layout5">
 
-        <ImageButton
+        <Button
             android:id="@+id/rulesButton"
             android:layout_width="135dp"
             android:layout_height="135dp"
@@ -95,6 +97,7 @@
             android:layout_centerVertical="true"
             android:background="@color/colorPrimary"
             android:elevation="10dp"
+            android:text="Rules"
             android:contentDescription="@string/rulesButtonDesc" />
 
     </RelativeLayout>
@@ -109,6 +112,20 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout2"
         app:layout_constraintBottom_toTopOf="@id/layout5">
+
+        <Button
+            android:id="@+id/userSettingsButton"
+            android:layout_width="135dp"
+            android:layout_height="135dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@color/colorPrimary"
+            android:elevation="10dp"
+            android:text="User Settings"
+            android:contentDescription="@string/userSettingButtonDesc" />
+
     </RelativeLayout>
 
     <RelativeLayout
