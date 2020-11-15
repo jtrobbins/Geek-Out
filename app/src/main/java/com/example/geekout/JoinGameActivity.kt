@@ -60,7 +60,19 @@ class JoinGameActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val inProgress = dataSnapshot.getValue(Boolean::class.java) as Boolean
                 if (!inProgress) {
-                    joinGame()
+                    databaseGames.child(code).child("num_players").addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            val numPlayers = dataSnapshot.getValue(Int::class.java) as Int
+                            if (numPlayers < 8) {
+                                joinGame()
+                            } else {
+                                Toast.makeText(this@JoinGameActivity, "Unable to join. Lobby Full.", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // do nothing
+                        }
+                    })
                 } else {
                     Toast.makeText(this@JoinGameActivity, "Unable to join. Game in progress.", Toast.LENGTH_LONG).show()
                 }
@@ -77,6 +89,15 @@ class JoinGameActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val username = dataSnapshot.value.toString()
                 val player = Player(username)
+                databaseGames.child(code).child("num_players").addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val numPlayers = dataSnapshot.getValue(Int::class.java) as Int
+                        databaseGames.child(code).child("num_players").setValue(numPlayers + 1)
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // do nothing
+                    }
+                })
                 databaseGames.child(code).child("players").child(uid).setValue(player)
                 val readyIntent = Intent(this@JoinGameActivity, StartGameActivity::class.java)
                 readyIntent.putExtra("code", code)

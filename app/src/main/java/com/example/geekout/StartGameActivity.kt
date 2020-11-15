@@ -36,7 +36,19 @@ class StartGameActivity: AppCompatActivity() {
         databaseCurrentGame = databaseGames.child(code)
 
         readyButton.setOnClickListener {
-            databaseCurrentGame.child("in_progress").setValue(true)
+            databaseGames.child(code).child("num_players").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val numPlayers = dataSnapshot.getValue(Int::class.java) as Int
+                    if (numPlayers >= 2) {
+                        databaseCurrentGame.child("in_progress").setValue(true)
+                    } else {
+                        Toast.makeText(this@StartGameActivity, "Unable to start. Not enough players.", Toast.LENGTH_LONG).show()
+                    }
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // do nothing
+                }
+            })
         }
 
         players = ArrayList()
