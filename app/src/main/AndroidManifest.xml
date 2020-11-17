@@ -26,7 +26,8 @@
         <activity android:name="JoinGameActivity"/>
         <activity android:name="StartGameActivity"/>
         <activity android:name="UserSettingsActivity"/>
-        <activity android:name=".RulesActivity"/>
+        <activity android:name="RulesActivity"/>
+        <activity android:name="ScoreboardActivity"/>
         <activity android:name="NotImplementedActivity"/>
     </application>
 

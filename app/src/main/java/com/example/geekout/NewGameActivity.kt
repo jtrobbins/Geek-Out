@@ -49,7 +49,7 @@ class NewGameActivity : AppCompatActivity() {
         databaseUsers.child(uid).child("username").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val username = dataSnapshot.value.toString()
-                val player = Player(username)
+                val player = Player(username, 1)
                 databaseGames.child(code).child("players").child(uid).setValue(player)
             }
             override fun onCancelled(databaseError: DatabaseError) {

@@ -35,6 +35,14 @@ class StartGameActivity: AppCompatActivity() {
         codeTextView.text = code
         databaseCurrentGame = databaseGames.child(code)
 
+        val scoreboardButton = findViewById<Button>(R.id.scoreboardButton)
+        scoreboardButton.setOnClickListener {
+            val scoreboardIntent = Intent(this, ScoreboardActivity::class.java)
+            scoreboardIntent.putExtra("code", code)
+            startActivity(scoreboardIntent)
+        }
+
+
         readyButton.setOnClickListener {
             databaseGames.child(code).child("num_players").addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {

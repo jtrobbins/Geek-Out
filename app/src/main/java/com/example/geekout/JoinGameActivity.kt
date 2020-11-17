@@ -88,17 +88,17 @@ class JoinGameActivity : AppCompatActivity() {
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val username = dataSnapshot.value.toString()
-                val player = Player(username)
                 databaseGames.child(code).child("num_players").addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val numPlayers = dataSnapshot.getValue(Int::class.java) as Int
+                        val player = Player(username,numPlayers + 1)
                         databaseGames.child(code).child("num_players").setValue(numPlayers + 1)
+                        databaseGames.child(code).child("players").child(uid).setValue(player)
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                         // do nothing
                     }
                 })
-                databaseGames.child(code).child("players").child(uid).setValue(player)
                 val readyIntent = Intent(this@JoinGameActivity, StartGameActivity::class.java)
                 readyIntent.putExtra("code", code)
                 startActivity(readyIntent)
