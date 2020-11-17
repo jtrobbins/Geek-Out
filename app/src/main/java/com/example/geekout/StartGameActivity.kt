@@ -19,7 +19,7 @@ class StartGameActivity: AppCompatActivity() {
     private lateinit var codeTextView: TextView
     private lateinit var playersListView: ListView
     private lateinit var readyButton: Button
-    internal lateinit var players: MutableList<User>
+    internal lateinit var players: MutableList<Player>
     private lateinit var code: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,17 +61,21 @@ class StartGameActivity: AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 players.clear()
 
-                var user: User? = null
+                var user: Player? = null
                 for (postSnapshot in dataSnapshot.children) {
                     try {
-                        user = postSnapshot.getValue(User::class.java)
+                        user = postSnapshot.getValue(Player::class.java)
                     } catch (e: Exception) {
                         Log.e(TAG, e.toString())
                     } finally {
                         players.add(user!!)
                     }
                 }
-                val playersListAdapter = UserList(this@StartGameActivity, players)
+                Collections.sort(players,
+                    Comparator { object1, object2 ->
+                        object1.player_num.compareTo(object2.player_num)
+                    })
+                val playersListAdapter = UserAdapter(this@StartGameActivity, players)
                 playersListView.adapter = playersListAdapter
             }
 

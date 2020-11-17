@@ -1,13 +1,13 @@
 package com.example.geekout
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
-import java.util.ArrayList
+import java.util.*
+import kotlin.Comparator
 
 class ScoreboardActivity : AppCompatActivity() {
 
@@ -15,7 +15,7 @@ class ScoreboardActivity : AppCompatActivity() {
     private lateinit var databaseCurrentGame: DatabaseReference
     private lateinit var playersListView: ListView
     private lateinit var returnButton: Button
-    internal lateinit var playersScore: MutableList<PlayerScore>
+    internal lateinit var playersScore: MutableList<Player>
     private lateinit var code: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,17 +43,22 @@ class ScoreboardActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 playersScore.clear()
 
-                var user: PlayerScore? = null
+                var user: Player? = null
                 for (postSnapshot in dataSnapshot.children) {
                     try {
-                        user = postSnapshot.getValue(PlayerScore::class.java)
+                        user = postSnapshot.getValue(Player::class.java)
                     } catch (e: Exception) {
                         Log.e(TAG, e.toString())
                     } finally {
                         playersScore.add(user!!)
                     }
                 }
-                val playersListAdapter = PlayerScoreList(this@ScoreboardActivity, playersScore)
+                Collections.sort(playersScore,
+                    Comparator { object1, object2 ->
+                        object1.points.compareTo(object2.points)
+                    })
+                playersScore.reverse()
+                val playersListAdapter = PlayerScoreAdapter(this@ScoreboardActivity, playersScore)
                 playersListView.adapter = playersListAdapter
             }
 

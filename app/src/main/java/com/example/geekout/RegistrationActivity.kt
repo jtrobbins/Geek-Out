@@ -70,7 +70,7 @@ class RegistrationActivity : AppCompatActivity() {
 
     private fun addUser(username: String) {
         uid = FirebaseAuth.getInstance().currentUser!!.uid
-        val user = User(username)
+        val user = Player(username)
         databaseUsers.child(uid).setValue(user)
     }
 

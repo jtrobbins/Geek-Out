@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 
-class UserList (private val context: Activity, private var players: List<User>) : ArrayAdapter<User>(context,
-    R.layout.layout_player_list, players) {
+class UserAdapter (private val context: Activity, private var players: List<Player>) :
+    ArrayAdapter<Player>(context, R.layout.layout_player_list, players) {
 
     @SuppressLint("InflateParams", "ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

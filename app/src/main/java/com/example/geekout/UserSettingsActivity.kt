@@ -61,7 +61,7 @@ class UserSettingsActivity : AppCompatActivity() {
     }
 
     private fun changeUsername(username: String) {
-        val user = User(username)
+        val user = Player(username)
         databaseUsers.child(uid).setValue(user)
     }
 
