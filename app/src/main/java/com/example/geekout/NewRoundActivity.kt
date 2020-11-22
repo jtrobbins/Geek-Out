@@ -92,7 +92,7 @@ class NewRoundActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Timer().schedule(5000) {
+        Timer().schedule(8000) {
             val bidIntent = Intent(this@NewRoundActivity, BidActivity::class.java)
             bidIntent.putExtra("code", code)
             startActivity(bidIntent)

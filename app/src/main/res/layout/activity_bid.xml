@@ -9,10 +9,76 @@
     tools:context=".BidActivity">
 
     <TextView
-        android:id="@+id/questionNum"
+        android:id="@+id/round"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/scoreboard" />
+        android:scaleType="fitXY"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/round"
+        android:textSize="20sp"/>
+
+    <ImageView
+        android:id="@+id/categoryIcon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="fitXY"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/circle"
+        android:contentDescription="@string/round" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/question" />
+
+    <TextView
+        android:id="@+id/question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/question"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/highest_bidder" />
+
+    <TextView
+        android:id="@+id/highestBidder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/username_hint"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/enter_bid" />
+
+
+    <EditText
+        android:id="@+id/bidEditText"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:layout_gravity="center_horizontal"
+        android:hint="@string/bid"
+        android:inputType="number"
+        android:importantForAutofill="no" />
+
+    <Button
+        android:id="@+id/passButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pass" />
+
+    <Button
+        android:id="@+id/bidButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bid" />
 
     <Button
         android:id="@+id/scoreboardButton"

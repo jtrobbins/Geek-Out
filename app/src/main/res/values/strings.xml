@@ -28,4 +28,8 @@
     <string name="zero_points">Points: 0</string>
     <string name="question">Question</string>
     <string name="round">Round</string>
+    <string name="enter_bid">Enter Bid</string>
+    <string name="bid">Bid</string>
+    <string name="pass">Pass</string>
+    <string name="highest_bidder">Current Highest Bidder</string>
 </resources>
