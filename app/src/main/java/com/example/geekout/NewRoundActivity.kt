@@ -20,11 +20,6 @@ class NewRoundActivity : AppCompatActivity() {
     private lateinit var categoryImageView: ImageView
     private lateinit var code: String
 
-    private var questionNum: Int? = null
-    fun setQuestionNum(num: Int?) {
-        this.questionNum = num
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_round)
@@ -45,6 +40,49 @@ class NewRoundActivity : AppCompatActivity() {
                 val roundNum = dataSnapshot.value.toString()
                 val roundStr = "Round: $roundNum"
                 roundTextView.text = roundStr
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // do nothing
+            }
+        })
+
+        databaseCurrentGame.child("question_num").addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val questionNum = dataSnapshot.value.toString()
+
+                databaseQuestions.child(questionNum).child("question").addListenerForSingleValueEvent(object :
+                    ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val question = dataSnapshot.value.toString()
+                        questionTextView.text = question
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // do nothing
+                    }
+                })
+
+                databaseQuestions.child(questionNum).child("category").addListenerForSingleValueEvent(object :
+                    ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val category = dataSnapshot.value.toString()
+                        if (category.equals("movie",true)) {
+                            categoryImageView.setImageResource(R.drawable.ic_movies_icon)
+                        } else if (category.equals("literature",true)) {
+                            categoryImageView.setImageResource(R.drawable.ic_literature_icon)
+                        } else if (category.equals("music",true)) {
+                            categoryImageView.setImageResource(R.drawable.ic_music_icon)
+                        } else if (category.equals("television",true)) {
+                            categoryImageView.setImageResource(R.drawable.ic_television_icon)
+                        } else if (category.equals("misc",true)) {
+                            categoryImageView.setImageResource(R.drawable.ic_misc_icon)
+                        }
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // do nothing
+                    }
+                })
+
             }
             override fun onCancelled(databaseError: DatabaseError) {
                 // do nothing

@@ -16,6 +16,7 @@ class StartGameActivity: AppCompatActivity() {
 
     private lateinit var databaseGames: DatabaseReference
     private lateinit var databaseCurrentGame: DatabaseReference
+    private lateinit var databaseQuestions: DatabaseReference
     private lateinit var codeTextView: TextView
     private lateinit var playersListView: ListView
     private lateinit var readyButton: Button
@@ -30,16 +31,32 @@ class StartGameActivity: AppCompatActivity() {
         playersListView = findViewById(R.id.players)
         readyButton = findViewById(R.id.readyButton)
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
+        databaseQuestions = FirebaseDatabase.getInstance().getReference("questions")
 
         code = intent.getStringExtra("code").toString()
         codeTextView.text = code
         databaseCurrentGame = databaseGames.child(code)
+
+        databaseCurrentGame.child("question_num").setValue(1)
 
         readyButton.setOnClickListener {
             databaseGames.child(code).child("num_players").addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val numPlayers = dataSnapshot.getValue(Int::class.java) as Int
                     if (numPlayers >= 2) {
+                        /*
+                        databaseQuestions.child("num_questions").addListenerForSingleValueEvent(object :
+                            ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                val numQuestions = dataSnapshot.getValue(Int::class.java) as Int
+                                val randQuestionNum = (0 until (numQuestions + 1)).random()
+                                databaseCurrentGame.child("question_num").setValue(randQuestionNum)
+                            }
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                // do nothing
+                            }
+                        })
+                        */
                         databaseCurrentGame.child("in_progress").setValue(true)
                     } else {
                         Toast.makeText(this@StartGameActivity, "Unable to start. Not enough players.", Toast.LENGTH_LONG).show()
