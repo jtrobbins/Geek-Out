@@ -26,4 +26,6 @@
     <string name="scoreboard">Scoreboard</string>
     <string name="return_button">Return</string>
     <string name="zero_points">Points: 0</string>
+    <string name="question">Question</string>
+    <string name="round">Round</string>
 </resources>

@@ -3,11 +3,13 @@ package com.example.geekout
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class BidActivity : AppCompatActivity() {
 
     private lateinit var scoreboardButton: Button
+    private lateinit var questionTextView: TextView
     private lateinit var code: String
 
     override fun onCreate(savedInstanceState: Bundle?) {

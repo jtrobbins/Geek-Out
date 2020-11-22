@@ -88,9 +88,9 @@ class StartGameActivity: AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val num = dataSnapshot.getValue(Boolean::class.java) as Boolean
                 if (num) {
-                    val bidIntent = Intent(this@StartGameActivity, BidActivity::class.java)
-                    bidIntent.putExtra("code", code)
-                    startActivity(bidIntent)
+                    val newRoundIntent = Intent(this@StartGameActivity, NewRoundActivity::class.java)
+                    newRoundIntent.putExtra("code", code)
+                    startActivity(newRoundIntent)
                 }
             }
 
