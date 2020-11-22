@@ -14,6 +14,7 @@ class NewGameActivity : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
     private lateinit var databaseUsers: DatabaseReference
     private lateinit var databaseGames: DatabaseReference
+    private lateinit var databaseQuestions: DatabaseReference
     private lateinit var codeTextView: TextView
     private lateinit var createButton: Button
     private lateinit var uid: String
@@ -26,6 +27,7 @@ class NewGameActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         databaseUsers = FirebaseDatabase.getInstance().getReference("users")
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
+        databaseQuestions = FirebaseDatabase.getInstance().getReference("questions")
 
         codeTextView = findViewById(R.id.code)
         createButton = findViewById(R.id.createGame)
@@ -52,6 +54,17 @@ class NewGameActivity : AppCompatActivity() {
                 val username = dataSnapshot.value.toString()
                 val player = Player(username, 1)
                 databaseGames.child(code).child("players").child(uid).setValue(player)
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // do nothing
+            }
+        })
+        databaseQuestions.child("num_questions").addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val numQuestions = dataSnapshot.getValue(Int::class.java) as Int
+                val randQuestionNum = (0 until (numQuestions + 1)).random()
+                databaseGames.child(code).child("question_num").setValue(randQuestionNum)
             }
             override fun onCancelled(databaseError: DatabaseError) {
                 // do nothing

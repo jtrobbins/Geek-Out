@@ -37,26 +37,11 @@ class StartGameActivity: AppCompatActivity() {
         codeTextView.text = code
         databaseCurrentGame = databaseGames.child(code)
 
-        databaseCurrentGame.child("question_num").setValue(1)
-
         readyButton.setOnClickListener {
             databaseGames.child(code).child("num_players").addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val numPlayers = dataSnapshot.getValue(Int::class.java) as Int
                     if (numPlayers >= 2) {
-                        /*
-                        databaseQuestions.child("num_questions").addListenerForSingleValueEvent(object :
-                            ValueEventListener {
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                val numQuestions = dataSnapshot.getValue(Int::class.java) as Int
-                                val randQuestionNum = (0 until (numQuestions + 1)).random()
-                                databaseCurrentGame.child("question_num").setValue(randQuestionNum)
-                            }
-                            override fun onCancelled(databaseError: DatabaseError) {
-                                // do nothing
-                            }
-                        })
-                        */
                         databaseCurrentGame.child("in_progress").setValue(true)
                     } else {
                         Toast.makeText(this@StartGameActivity, "Unable to start. Not enough players.", Toast.LENGTH_LONG).show()
