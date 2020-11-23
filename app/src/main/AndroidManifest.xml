@@ -30,6 +30,8 @@
         <activity android:name="ScoreboardActivity"/>
         <activity android:name="BidActivity"/>
         <activity android:name="NewRoundActivity"/>
+        <activity android:name="WaitActivity"/>
+        <activity android:name="AnswerActivity"/>
         <activity android:name="NotImplementedActivity"/>
     </application>
 

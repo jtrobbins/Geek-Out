@@ -30,6 +30,9 @@
     <string name="round">Round</string>
     <string name="enter_bid">Enter Bid</string>
     <string name="bid">Bid</string>
+    <string name="test_bid">Bid: 1</string>
     <string name="pass">Pass</string>
     <string name="highest_bidder">Current Highest Bidder</string>
+    <string name="wait">Waiting for player to submit answers</string>
+    <string name="answers">Input Answers</string>
 </resources>

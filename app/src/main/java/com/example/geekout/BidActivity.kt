@@ -18,6 +18,7 @@ class BidActivity : AppCompatActivity() {
     private lateinit var roundTextView: TextView
     private lateinit var questionTextView: TextView
     private lateinit var highestBidderTextView: TextView
+    private lateinit var highestBidTextView: TextView
     private lateinit var categoryImageView: ImageView
     private lateinit var bidEditText: EditText
     private lateinit var passButton: Button
@@ -35,7 +36,8 @@ class BidActivity : AppCompatActivity() {
 
         roundTextView = findViewById(R.id.round)
         questionTextView = findViewById(R.id.question)
-        highestBidderTextView = findViewById(R.id.highestBidder)
+        highestBidderTextView = findViewById(R.id.highestBidderText)
+        highestBidTextView = findViewById(R.id.highestBidText)
         categoryImageView = findViewById(R.id.categoryIcon)
         bidEditText = findViewById(R.id.bidEditText)
         passButton = findViewById<Button>(R.id.passButton)
@@ -48,17 +50,39 @@ class BidActivity : AppCompatActivity() {
         databaseCurrentGame = databaseGames.child(code)
 
         passButton.setOnClickListener {
-            databaseCurrentGame.child("num_pass").addListenerForSingleValueEvent(object :
+            databaseCurrentGame.child("highest_bidder").addListenerForSingleValueEvent(object :
                 ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val passNum = dataSnapshot.getValue(Int::class.java) as Int
-                    databaseCurrentGame.child("num_pass").setValue(passNum + 1)
+                    val highestBidder = dataSnapshot.getValue(Int::class.java) as Int
+                    databaseCurrentGame.child("players").child(uid).child("player_num").addListenerForSingleValueEvent(object :
+                        ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            val playerNum = dataSnapshot.getValue(Int::class.java) as Int
+                            if (playerNum == highestBidder) {
+                                Toast.makeText(applicationContext, "Highest bidder can not pass!", Toast.LENGTH_LONG).show()
+                            } else {
+                                databaseCurrentGame.child("num_pass").addListenerForSingleValueEvent(object :
+                                    ValueEventListener {
+                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                        val passNum = dataSnapshot.getValue(Int::class.java) as Int
+                                        databaseCurrentGame.child("num_pass").setValue(passNum + 1)
+                                    }
+                                    override fun onCancelled(databaseError: DatabaseError) {
+                                        // do nothing
+                                    }
+                                })
+                                bidButton.isEnabled = false
+                            }
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // do nothing
+                        }
+                    })
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                     // do nothing
                 }
             })
-            bidButton.isEnabled = false
         }
 
         bidButton.setOnClickListener {
@@ -177,8 +201,9 @@ class BidActivity : AppCompatActivity() {
                                         user = postSnapshot.getValue(Player::class.java)
                                         if (user!!.player_num == highestBidder) {
                                             val username = user.username
-                                            val bidStr = "Username: $username Bid: $highestBid"
-                                            highestBidderTextView.text = bidStr
+                                            val bidStr = "Bid: $highestBid"
+                                            highestBidderTextView.text = username
+                                            highestBidTextView.text = bidStr
                                         }
                                     } catch (e: Exception) {
                                         Log.e(TAG, e.toString())
@@ -209,9 +234,33 @@ class BidActivity : AppCompatActivity() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val numPlayers = dataSnapshot.getValue(Int::class.java) as Int
                         if (passNum == numPlayers - 1) {
-                            val notImplementedIntent = Intent(this@BidActivity, NotImplementedActivity::class.java)
-                            notImplementedIntent.putExtra("code", code)
-                            startActivity(notImplementedIntent)
+                            databaseCurrentGame.child("highest_bidder").addListenerForSingleValueEvent(object :
+                                ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    val highestBidder = dataSnapshot.getValue(Int::class.java) as Int
+                                    databaseCurrentGame.child("players").child(uid).child("player_num").addListenerForSingleValueEvent(object :
+                                        ValueEventListener {
+                                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                            val playerNum = dataSnapshot.getValue(Int::class.java) as Int
+                                            if (playerNum == highestBidder) {
+                                                val answerIntent = Intent(this@BidActivity, AnswerActivity::class.java)
+                                                answerIntent.putExtra("code", code)
+                                                startActivity(answerIntent)
+                                            } else {
+                                                val waitIntent = Intent(this@BidActivity, WaitActivity::class.java)
+                                                waitIntent.putExtra("code", code)
+                                                startActivity(waitIntent)
+                                            }
+                                        }
+                                        override fun onCancelled(databaseError: DatabaseError) {
+                                            // do nothing
+                                        }
+                                    })
+                                }
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                    // do nothing
+                                }
+                            })
                         }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
