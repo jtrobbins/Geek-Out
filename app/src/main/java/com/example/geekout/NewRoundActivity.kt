@@ -29,6 +29,8 @@ class NewRoundActivity : AppCompatActivity() {
         databaseCurrentGame = databaseGames.child(code)
 
         databaseCurrentGame.child("num_pass").setValue(0)
+        databaseCurrentGame.child("highest_bid").setValue(1)
+        databaseCurrentGame.child("highest_bidder").setValue(1)
 
         databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
             ValueEventListener {
