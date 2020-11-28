@@ -38,9 +38,9 @@ class WaitAnswerActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val isReady = dataSnapshot.getValue(Boolean::class.java) as Boolean
                 if (isReady) {
-                    val notImplementedIntent = Intent(this@WaitAnswerActivity, NotImplementedActivity::class.java)
-                    notImplementedIntent.putExtra("code", code)
-                    startActivity(notImplementedIntent)
+                    val reviewIntent = Intent(this@WaitAnswerActivity, ReviewActivity::class.java)
+                    reviewIntent.putExtra("code", code)
+                    startActivity(reviewIntent)
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {

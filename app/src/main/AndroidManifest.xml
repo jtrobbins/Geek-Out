@@ -33,6 +33,8 @@
         <activity android:name="HighestBidderActivity"/>
         <activity android:name="WaitAnswerActivity"/>
         <activity android:name="AnswerActivity"/>
+        <activity android:name="WaitReviewActivity"/>
+        <activity android:name="ReviewActivity"/>
         <activity android:name="NotImplementedActivity"/>
     </application>
 
