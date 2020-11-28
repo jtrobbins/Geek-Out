@@ -8,12 +8,20 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/round"
+        android:id="@+id/highestBidderText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:layout_gravity="center_horizontal"
-        android:text="@string/round"
-        android:textSize="60sp"/>
+        android:text="Jeff"
+        android:textSize="50sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:layout_gravity="center_horizontal"
+        android:text="won the bid!"
+        android:textSize="50sp"/>
 
 </LinearLayout>

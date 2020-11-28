@@ -7,8 +7,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import java.util.*
-import kotlin.Comparator
 
 class BidActivity : AppCompatActivity() {
 
@@ -234,33 +232,9 @@ class BidActivity : AppCompatActivity() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val numPlayers = dataSnapshot.getValue(Int::class.java) as Int
                         if (passNum == numPlayers - 1) {
-                            databaseCurrentGame.child("highest_bidder").addListenerForSingleValueEvent(object :
-                                ValueEventListener {
-                                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                    val highestBidder = dataSnapshot.getValue(Int::class.java) as Int
-                                    databaseCurrentGame.child("players").child(uid).child("player_num").addListenerForSingleValueEvent(object :
-                                        ValueEventListener {
-                                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                            val playerNum = dataSnapshot.getValue(Int::class.java) as Int
-                                            if (playerNum == highestBidder) {
-                                                val answerIntent = Intent(this@BidActivity, AnswerActivity::class.java)
-                                                answerIntent.putExtra("code", code)
-                                                startActivity(answerIntent)
-                                            } else {
-                                                val waitIntent = Intent(this@BidActivity, WaitActivity::class.java)
-                                                waitIntent.putExtra("code", code)
-                                                startActivity(waitIntent)
-                                            }
-                                        }
-                                        override fun onCancelled(databaseError: DatabaseError) {
-                                            // do nothing
-                                        }
-                                    })
-                                }
-                                override fun onCancelled(databaseError: DatabaseError) {
-                                    // do nothing
-                                }
-                            })
+                            val highestBidderIntent = Intent(this@BidActivity, HighestBidderActivity::class.java)
+                            highestBidderIntent.putExtra("code", code)
+                            startActivity(highestBidderIntent)
                         }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
