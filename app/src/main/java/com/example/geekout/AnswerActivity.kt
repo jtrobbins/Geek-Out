@@ -1,9 +1,7 @@
 package com.example.geekout
 
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
-import android.system.Os.link
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -111,10 +109,48 @@ class AnswerActivity : AppCompatActivity() {
                     linearLayout.addView(editText)
                     allEditText.add(editText)
                 }
+
                 val submitButton = Button(this@AnswerActivity)
                 submitButton.setText(R.string.submit)
                 submitButton.setOnClickListener {
-                    Toast.makeText(applicationContext, "TEST TEST", Toast.LENGTH_LONG).show()
+                    databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
+                        ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            val roundNum = dataSnapshot.value.toString()
+                            val answers = arrayListOf<String>()
+                            var num = 0
+                            for (i in 0 until allEditText.size) {
+                                val strAnswer = allEditText[i].text.toString()
+                                if (strAnswer == "") {
+                                    Toast.makeText(applicationContext, "Please fill all answer fields!", Toast.LENGTH_LONG).show()
+                                    break
+                                }
+                                if(!answers.contains(strAnswer)) {
+                                    answers.add(allEditText[i].text.toString())
+                                    num++
+                                } else {
+                                    Toast.makeText(applicationContext, "Please enter a non-duplicate answer!", Toast.LENGTH_LONG).show()
+                                    break
+                                }
+                            }
+                            if (num == numAnswers) {
+                                for (i in 0 until answers.size) {
+                                    val pathNum = i + 1
+                                    databaseGames.child(code).child("answers")
+                                        .child("round_$roundNum").child("$pathNum")
+                                        .setValue(answers[i])
+                                }
+                            }
+                            Toast.makeText(applicationContext, "Answers submitted!", Toast.LENGTH_LONG).show()
+                            databaseCurrentGame.child("answers_ready").setValue(true)
+                            val notImplementedIntent = Intent(this@AnswerActivity, NotImplementedActivity::class.java)
+                            notImplementedIntent.putExtra("code", code)
+                            startActivity(notImplementedIntent)
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // do nothing
+                        }
+                    })
                 }
                 linearLayout.addView(submitButton)
 
