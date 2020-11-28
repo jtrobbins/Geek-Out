@@ -28,14 +28,15 @@ class NewRoundActivity : AppCompatActivity() {
         code = intent.getStringExtra("code").toString()
         databaseCurrentGame = databaseGames.child(code)
 
-        databaseCurrentGame.child("num_pass").setValue(0)
-        databaseCurrentGame.child("highest_bid").setValue(1)
-        databaseCurrentGame.child("highest_bidder").setValue(1)
-
         databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val roundNum = dataSnapshot.value.toString()
+
+                databaseCurrentGame.child("round_$roundNum").child("num_pass").setValue(0)
+                databaseCurrentGame.child("round_$roundNum").child("highest_bid").setValue(1)
+                databaseCurrentGame.child("round_$roundNum").child("highest_bidder").setValue(1)
+
                 val roundStr = "Round $roundNum"
                 roundTextView.text = roundStr
             }

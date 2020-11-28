@@ -49,7 +49,7 @@ class NewGameActivity : AppCompatActivity() {
         databaseGames.child(code).child("in_progress").setValue(false)
         databaseGames.child(code).child("num_players").setValue(1)
         databaseGames.child(code).child("round_num").setValue(1)
-        databaseGames.child(code).child("answers_ready").setValue(false)
+        databaseGames.child(code).child("round_1").child("answers_ready").setValue(false)
         databaseUsers.child(uid).child("username").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val username = dataSnapshot.value.toString()
@@ -65,7 +65,7 @@ class NewGameActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val numQuestions = dataSnapshot.getValue(Int::class.java) as Int
                 val randQuestionNum = (1..numQuestions).random()
-                databaseGames.child(code).child("question_num").setValue(randQuestionNum)
+                databaseGames.child(code).child("round_1").child("question_num").setValue(randQuestionNum)
             }
             override fun onCancelled(databaseError: DatabaseError) {
                 // do nothing

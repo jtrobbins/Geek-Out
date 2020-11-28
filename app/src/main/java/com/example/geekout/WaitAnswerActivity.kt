@@ -34,14 +34,24 @@ class WaitAnswerActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        databaseCurrentGame.child("answers_ready").addValueEventListener(object : ValueEventListener {
+        databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
+            ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val isReady = dataSnapshot.getValue(Boolean::class.java) as Boolean
-                if (isReady) {
-                    val reviewIntent = Intent(this@WaitAnswerActivity, ReviewActivity::class.java)
-                    reviewIntent.putExtra("code", code)
-                    startActivity(reviewIntent)
-                }
+                val roundNum = dataSnapshot.value.toString()
+
+                databaseCurrentGame.child("round_$roundNum").child("answers_ready").addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val isReady = dataSnapshot.getValue(Boolean::class.java) as Boolean
+                        if (isReady) {
+                            val reviewIntent = Intent(this@WaitAnswerActivity, ReviewActivity::class.java)
+                            reviewIntent.putExtra("code", code)
+                            startActivity(reviewIntent)
+                        }
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // do nothing
+                    }
+                })
             }
             override fun onCancelled(databaseError: DatabaseError) {
                 // do nothing

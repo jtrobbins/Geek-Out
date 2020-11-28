@@ -31,25 +31,33 @@ class HighestBidderActivity : AppCompatActivity() {
 
         uid = FirebaseAuth.getInstance().currentUser!!.uid
 
-        databaseCurrentGame.child("highest_bidder").addListenerForSingleValueEvent(object :
+        databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val highestBidder = dataSnapshot.getValue(Int::class.java) as Int
-                databaseCurrentGame.child("players").addValueEventListener(object : ValueEventListener {
+                val roundNum = dataSnapshot.value.toString()
+                databaseCurrentGame.child("round_$roundNum").child("highest_bidder").addListenerForSingleValueEvent(object :
+                    ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                        var user: Player? = null
-                        for (postSnapshot in dataSnapshot.children) {
-                            try {
-                                user = postSnapshot.getValue(Player::class.java)
-                                if (user!!.player_num == highestBidder) {
-                                    val username = user.username
-                                    highestBidderTextView.text = username
+                        val highestBidder = dataSnapshot.getValue(Int::class.java) as Int
+                        databaseCurrentGame.child("players").addValueEventListener(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                var user: Player? = null
+                                for (postSnapshot in dataSnapshot.children) {
+                                    try {
+                                        user = postSnapshot.getValue(Player::class.java)
+                                        if (user!!.player_num == highestBidder) {
+                                            val username = user.username
+                                            highestBidderTextView.text = username
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, e.toString())
+                                    }
                                 }
-                            } catch (e: Exception) {
-                                Log.e(TAG, e.toString())
                             }
-                        }
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                // do nothing
+                            }
+                        })
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                         // do nothing
@@ -65,23 +73,32 @@ class HighestBidderActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         Timer().schedule(3000) {
-            databaseCurrentGame.child("highest_bidder").addListenerForSingleValueEvent(object :
+            databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
                 ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val highestBidder = dataSnapshot.getValue(Int::class.java) as Int
-                    databaseCurrentGame.child("players").child(uid).child("player_num").addListenerForSingleValueEvent(object :
+                    val roundNum = dataSnapshot.value.toString()
+                    databaseCurrentGame.child("round_$roundNum").child("highest_bidder").addListenerForSingleValueEvent(object :
                         ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val playerNum = dataSnapshot.getValue(Int::class.java) as Int
-                            if (playerNum == highestBidder) {
-                                val answerIntent = Intent(this@HighestBidderActivity, AnswerActivity::class.java)
-                                answerIntent.putExtra("code", code)
-                                startActivity(answerIntent)
-                            } else {
-                                val waitIntent = Intent(this@HighestBidderActivity, WaitAnswerActivity::class.java)
-                                waitIntent.putExtra("code", code)
-                                startActivity(waitIntent)
-                            }
+                            val highestBidder = dataSnapshot.getValue(Int::class.java) as Int
+                            databaseCurrentGame.child("players").child(uid).child("player_num").addListenerForSingleValueEvent(object :
+                                ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    val playerNum = dataSnapshot.getValue(Int::class.java) as Int
+                                    if (playerNum == highestBidder) {
+                                        val answerIntent = Intent(this@HighestBidderActivity, AnswerActivity::class.java)
+                                        answerIntent.putExtra("code", code)
+                                        startActivity(answerIntent)
+                                    } else {
+                                        val waitIntent = Intent(this@HighestBidderActivity, WaitAnswerActivity::class.java)
+                                        waitIntent.putExtra("code", code)
+                                        startActivity(waitIntent)
+                                    }
+                                }
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                    // do nothing
+                                }
+                            })
                         }
                         override fun onCancelled(databaseError: DatabaseError) {
                             // do nothing
