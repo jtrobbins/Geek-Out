@@ -35,4 +35,6 @@
     <string name="highest_bidder">Current Highest Bidder</string>
     <string name="wait">Waiting for player to submit answers</string>
     <string name="answers">Input Answers</string>
+    <string name="enter_answer">Enter Answer</string>
+    <string name="submit">Submit</string>
 </resources>

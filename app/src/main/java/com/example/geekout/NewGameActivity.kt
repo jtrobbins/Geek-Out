@@ -64,7 +64,7 @@ class NewGameActivity : AppCompatActivity() {
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val numQuestions = dataSnapshot.getValue(Int::class.java) as Int
-                val randQuestionNum = (0 until (numQuestions + 1)).random()
+                val randQuestionNum = (1..numQuestions).random()
                 databaseGames.child(code).child("question_num").setValue(randQuestionNum)
             }
             override fun onCancelled(databaseError: DatabaseError) {
