@@ -41,82 +41,74 @@ class AnswerActivity : AppCompatActivity() {
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val roundNum = dataSnapshot.value.toString()
+
                 val roundStr = "Round: $roundNum"
                 roundTextView.text = roundStr
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-                // do nothing
-            }
-        })
 
-        databaseCurrentGame.child("question_num").addListenerForSingleValueEvent(object :
-            ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val questionNum = dataSnapshot.value.toString()
-
-                databaseQuestions.child(questionNum).child("question").addListenerForSingleValueEvent(object :
+                databaseCurrentGame.child("round_$roundNum").child("question_num").addListenerForSingleValueEvent(object :
                     ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val question = dataSnapshot.value.toString()
-                        questionTextView.text = question
+                        val questionNum = dataSnapshot.value.toString()
+
+                        databaseQuestions.child(questionNum).child("question").addListenerForSingleValueEvent(object :
+                            ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                val question = dataSnapshot.value.toString()
+                                questionTextView.text = question
+                            }
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                // do nothing
+                            }
+                        })
+
+                        databaseQuestions.child(questionNum).child("category").addListenerForSingleValueEvent(object :
+                            ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                val category = dataSnapshot.value.toString()
+                                if (category.equals("movie",true)) {
+                                    categoryImageView.setImageResource(R.drawable.ic_movies_icon)
+                                } else if (category.equals("literature",true)) {
+                                    categoryImageView.setImageResource(R.drawable.ic_literature_icon)
+                                } else if (category.equals("music",true)) {
+                                    categoryImageView.setImageResource(R.drawable.ic_music_icon)
+                                } else if (category.equals("television",true)) {
+                                    categoryImageView.setImageResource(R.drawable.ic_television_icon)
+                                } else if (category.equals("misc",true)) {
+                                    categoryImageView.setImageResource(R.drawable.ic_misc_icon)
+                                }
+                            }
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                // do nothing
+                            }
+                        })
+
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                         // do nothing
                     }
                 })
 
-                databaseQuestions.child(questionNum).child("category").addListenerForSingleValueEvent(object :
+                databaseCurrentGame.child("round_$roundNum").child("highest_bid").addListenerForSingleValueEvent(object :
                     ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val category = dataSnapshot.value.toString()
-                        if (category.equals("movie",true)) {
-                            categoryImageView.setImageResource(R.drawable.ic_movies_icon)
-                        } else if (category.equals("literature",true)) {
-                            categoryImageView.setImageResource(R.drawable.ic_literature_icon)
-                        } else if (category.equals("music",true)) {
-                            categoryImageView.setImageResource(R.drawable.ic_music_icon)
-                        } else if (category.equals("television",true)) {
-                            categoryImageView.setImageResource(R.drawable.ic_television_icon)
-                        } else if (category.equals("misc",true)) {
-                            categoryImageView.setImageResource(R.drawable.ic_misc_icon)
+                        val numAnswers = dataSnapshot.getValue(Int::class.java) as Int
+                        for (i in 1..numAnswers) {
+                            val textView = TextView(this@AnswerActivity)
+                            val str = "Answer $i"
+                            textView.text = str
+                            linearLayout.addView(textView)
+
+                            val editText = EditText(this@AnswerActivity)
+                            editText.setHint(R.string.enter_answer)
+                            editText.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            editText.setPadding(20, 20, 20, 20)
+                            linearLayout.addView(editText)
+                            allEditText.add(editText)
                         }
-                    }
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        // do nothing
-                    }
-                })
 
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-                // do nothing
-            }
-        })
-
-        databaseCurrentGame.child("highest_bid").addListenerForSingleValueEvent(object :
-            ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val numAnswers = dataSnapshot.getValue(Int::class.java) as Int
-                for (i in 1..numAnswers) {
-                    val textView = TextView(this@AnswerActivity)
-                    val str = "Answer $i"
-                    textView.text = str
-                    linearLayout.addView(textView)
-
-                    val editText = EditText(this@AnswerActivity)
-                    editText.setHint(R.string.enter_answer)
-                    editText.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                    editText.setPadding(20, 20, 20, 20)
-                    linearLayout.addView(editText)
-                    allEditText.add(editText)
-                }
-
-                val submitButton = Button(this@AnswerActivity)
-                submitButton.setText(R.string.submit)
-                submitButton.setOnClickListener {
-                    databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
-                        ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val roundNum = dataSnapshot.value.toString()
+                        val submitButton = Button(this@AnswerActivity)
+                        submitButton.setText(R.string.submit)
+                        submitButton.setOnClickListener {
                             val answers = arrayListOf<String>()
                             var num = 0
                             for (i in 0 until allEditText.size) {
@@ -136,42 +128,32 @@ class AnswerActivity : AppCompatActivity() {
                             if (num == numAnswers) {
                                 for (i in 0 until answers.size) {
                                     val pathNum = i + 1
-                                    databaseGames.child(code).child("answers")
-                                        .child("round_$roundNum").child("$pathNum")
+                                    databaseGames.child(code).child("round_$roundNum")
+                                        .child("answers").child("$pathNum")
                                         .setValue(answers[i])
                                 }
                             }
                             Toast.makeText(applicationContext, "Answers submitted!", Toast.LENGTH_LONG).show()
-                            databaseCurrentGame.child("answers_ready").setValue(true)
-
-                            /*
+                            databaseCurrentGame.child("round_$roundNum").child("answers_ready").setValue(true)
                             val waitReviewIntent = Intent(this@AnswerActivity, WaitReviewActivity::class.java)
                             waitReviewIntent.putExtra("code", code)
                             startActivity(waitReviewIntent)
-
-                             */
-
-                            val intent = Intent(this@AnswerActivity, ReviewAnswers::class.java)
-                            intent.putExtra("code", code)
-                            intent.putExtra("answers_list", answers)
-                            startActivity(intent)
-
                         }
-                        override fun onCancelled(databaseError: DatabaseError) {
-                            // do nothing
-                        }
-                    })
-                }
-                linearLayout.addView(submitButton)
+                        linearLayout.addView(submitButton)
 
-                val scoreboardButton = Button(this@AnswerActivity)
-                scoreboardButton.setText(R.string.scoreboard)
-                scoreboardButton.setOnClickListener {
-                    val scoreboardIntent = Intent(this@AnswerActivity, ScoreboardActivity::class.java)
-                    scoreboardIntent.putExtra("code", code)
-                    startActivity(scoreboardIntent)
-                }
-                linearLayout.addView(scoreboardButton)
+                        val scoreboardButton = Button(this@AnswerActivity)
+                        scoreboardButton.setText(R.string.scoreboard)
+                        scoreboardButton.setOnClickListener {
+                            val scoreboardIntent = Intent(this@AnswerActivity, ScoreboardActivity::class.java)
+                            scoreboardIntent.putExtra("code", code)
+                            startActivity(scoreboardIntent)
+                        }
+                        linearLayout.addView(scoreboardButton)
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // do nothing
+                    }
+                })
             }
             override fun onCancelled(databaseError: DatabaseError) {
                 // do nothing

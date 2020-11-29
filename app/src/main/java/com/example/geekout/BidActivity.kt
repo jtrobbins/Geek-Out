@@ -48,29 +48,38 @@ class BidActivity : AppCompatActivity() {
         databaseCurrentGame = databaseGames.child(code)
 
         passButton.setOnClickListener {
-            databaseCurrentGame.child("highest_bidder").addListenerForSingleValueEvent(object :
+            databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
                 ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val highestBidder = dataSnapshot.getValue(Int::class.java) as Int
-                    databaseCurrentGame.child("players").child(uid).child("player_num").addListenerForSingleValueEvent(object :
+                    val roundNum = dataSnapshot.value.toString()
+                    databaseCurrentGame.child("round_$roundNum").child("highest_bidder").addListenerForSingleValueEvent(object :
                         ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val playerNum = dataSnapshot.getValue(Int::class.java) as Int
-                            if (playerNum == highestBidder) {
-                                Toast.makeText(applicationContext, "Highest bidder can not pass!", Toast.LENGTH_LONG).show()
-                            } else {
-                                databaseCurrentGame.child("num_pass").addListenerForSingleValueEvent(object :
-                                    ValueEventListener {
-                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                        val passNum = dataSnapshot.getValue(Int::class.java) as Int
-                                        databaseCurrentGame.child("num_pass").setValue(passNum + 1)
+                            val highestBidder = dataSnapshot.getValue(Int::class.java) as Int
+                            databaseCurrentGame.child("players").child(uid).child("player_num").addListenerForSingleValueEvent(object :
+                                ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    val playerNum = dataSnapshot.getValue(Int::class.java) as Int
+                                    if (playerNum == highestBidder) {
+                                        Toast.makeText(applicationContext, "Highest bidder can not pass!", Toast.LENGTH_LONG).show()
+                                    } else {
+                                        databaseCurrentGame.child("round_$roundNum").child("num_pass").addListenerForSingleValueEvent(object :
+                                            ValueEventListener {
+                                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                                val passNum = dataSnapshot.getValue(Int::class.java) as Int
+                                                databaseCurrentGame.child("round_$roundNum").child("num_pass").setValue(passNum + 1)
+                                            }
+                                            override fun onCancelled(databaseError: DatabaseError) {
+                                                // do nothing
+                                            }
+                                        })
+                                        bidButton.isEnabled = false
                                     }
-                                    override fun onCancelled(databaseError: DatabaseError) {
-                                        // do nothing
-                                    }
-                                })
-                                bidButton.isEnabled = false
-                            }
+                                }
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                    // do nothing
+                                }
+                            })
                         }
                         override fun onCancelled(databaseError: DatabaseError) {
                             // do nothing
@@ -85,31 +94,41 @@ class BidActivity : AppCompatActivity() {
 
         bidButton.setOnClickListener {
             val bid = Integer.parseInt(bidEditText.text.toString())
-            databaseCurrentGame.child("highest_bid").addListenerForSingleValueEvent(object :
+
+            databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
                 ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val currHighestBid = dataSnapshot.getValue(Int::class.java) as Int
-                    databaseCurrentGame.child("players").child(uid).child("player_num").addListenerForSingleValueEvent(object :
+                    val roundNum = dataSnapshot.value.toString()
+                    databaseCurrentGame.child("round_$roundNum").child("highest_bid").addListenerForSingleValueEvent(object :
                         ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val playerNum = dataSnapshot.getValue(Int::class.java) as Int
+                            val currHighestBid = dataSnapshot.getValue(Int::class.java) as Int
+                            databaseCurrentGame.child("players").child(uid).child("player_num").addListenerForSingleValueEvent(object :
+                                ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    val playerNum = dataSnapshot.getValue(Int::class.java) as Int
+                                    if (bid > currHighestBid) {
+                                        databaseCurrentGame.child("round_$roundNum").child("highest_bid").setValue(bid)
+                                        databaseCurrentGame.child("round_$roundNum").child("highest_bidder").setValue(playerNum)
+                                    } else {
+                                        Toast.makeText(applicationContext, "Enter a higher bid!", Toast.LENGTH_LONG).show()
+                                    }
+                                    bidEditText.setText("")
+                                }
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                    // do nothing
+                                }
+                            })
                             if (bid > currHighestBid) {
-                                databaseCurrentGame.child("highest_bid").setValue(bid)
-                                databaseCurrentGame.child("highest_bidder").setValue(playerNum)
+                                databaseCurrentGame.child("round_$roundNum").child("highest_bid").setValue(bid)
                             } else {
                                 Toast.makeText(applicationContext, "Enter a higher bid!", Toast.LENGTH_LONG).show()
                             }
-                            bidEditText.setText("")
                         }
                         override fun onCancelled(databaseError: DatabaseError) {
                             // do nothing
                         }
                     })
-                    if (bid > currHighestBid) {
-                        databaseCurrentGame.child("highest_bid").setValue(bid)
-                    } else {
-                        Toast.makeText(applicationContext, "Enter a higher bid!", Toast.LENGTH_LONG).show()
-                    }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                     // do nothing
@@ -129,43 +148,44 @@ class BidActivity : AppCompatActivity() {
                 val roundNum = dataSnapshot.value.toString()
                 val roundStr = "Round: $roundNum"
                 roundTextView.text = roundStr
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-                // do nothing
-            }
-        })
 
-        databaseCurrentGame.child("question_num").addListenerForSingleValueEvent(object :
-            ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val questionNum = dataSnapshot.value.toString()
-
-                databaseQuestions.child(questionNum).child("question").addListenerForSingleValueEvent(object :
+                databaseCurrentGame.child("round_$roundNum").child("question_num").addListenerForSingleValueEvent(object :
                     ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val question = dataSnapshot.value.toString()
-                        questionTextView.text = question
-                    }
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        // do nothing
-                    }
-                })
+                        val questionNum = dataSnapshot.value.toString()
 
-                databaseQuestions.child(questionNum).child("category").addListenerForSingleValueEvent(object :
-                    ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val category = dataSnapshot.value.toString()
-                        if (category.equals("movie",true)) {
-                            categoryImageView.setImageResource(R.drawable.ic_movies_icon)
-                        } else if (category.equals("literature",true)) {
-                            categoryImageView.setImageResource(R.drawable.ic_literature_icon)
-                        } else if (category.equals("music",true)) {
-                            categoryImageView.setImageResource(R.drawable.ic_music_icon)
-                        } else if (category.equals("television",true)) {
-                            categoryImageView.setImageResource(R.drawable.ic_television_icon)
-                        } else if (category.equals("misc",true)) {
-                            categoryImageView.setImageResource(R.drawable.ic_misc_icon)
-                        }
+                        databaseQuestions.child(questionNum).child("question").addListenerForSingleValueEvent(object :
+                            ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                val question = dataSnapshot.value.toString()
+                                questionTextView.text = question
+                            }
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                // do nothing
+                            }
+                        })
+
+                        databaseQuestions.child(questionNum).child("category").addListenerForSingleValueEvent(object :
+                            ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                val category = dataSnapshot.value.toString()
+                                if (category.equals("movie",true)) {
+                                    categoryImageView.setImageResource(R.drawable.ic_movies_icon)
+                                } else if (category.equals("literature",true)) {
+                                    categoryImageView.setImageResource(R.drawable.ic_literature_icon)
+                                } else if (category.equals("music",true)) {
+                                    categoryImageView.setImageResource(R.drawable.ic_music_icon)
+                                } else if (category.equals("television",true)) {
+                                    categoryImageView.setImageResource(R.drawable.ic_television_icon)
+                                } else if (category.equals("misc",true)) {
+                                    categoryImageView.setImageResource(R.drawable.ic_misc_icon)
+                                }
+                            }
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                // do nothing
+                            }
+                        })
+
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                         // do nothing
@@ -182,38 +202,41 @@ class BidActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        databaseCurrentGame.child("highest_bid").addValueEventListener(object :
+        databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val highestBid = dataSnapshot.getValue(Int::class.java) as Int
-                databaseCurrentGame.child("highest_bidder").addListenerForSingleValueEvent(object :
+                val roundNum = dataSnapshot.value.toString()
+
+                databaseCurrentGame.child("round_$roundNum").child("highest_bid").addValueEventListener(object :
                     ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val highestBidder = dataSnapshot.getValue(Int::class.java) as Int
-                        databaseCurrentGame.child("players").addValueEventListener(object : ValueEventListener {
+                        val highestBid = dataSnapshot.getValue(Int::class.java) as Int
+                        databaseCurrentGame.child("round_$roundNum").child("highest_bidder").addListenerForSingleValueEvent(object :
+                            ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                val highestBidder = dataSnapshot.getValue(Int::class.java) as Int
+                                databaseCurrentGame.child("players").addValueEventListener(object : ValueEventListener {
+                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                                var user: Player? = null
-                                for (postSnapshot in dataSnapshot.children) {
-                                    try {
-                                        user = postSnapshot.getValue(Player::class.java)
-                                        if (user!!.player_num == highestBidder) {
-                                            val username = user.username
-                                            val bidStr = "Bid: $highestBid"
-                                            highestBidderTextView.text = username
-                                            highestBidTextView.text = bidStr
-
-                                            /*
-                                            val highestBidderIntent = Intent(this@BidActivity, HighestBidderActivity::class.java)
-                                            highestBidderIntent.putExtra("code", code)
-                                            startActivity(highestBidderIntent)
-
-                                             */
+                                        var user: Player? = null
+                                        for (postSnapshot in dataSnapshot.children) {
+                                            try {
+                                                user = postSnapshot.getValue(Player::class.java)
+                                                if (user!!.player_num == highestBidder) {
+                                                    val username = user.username
+                                                    val bidStr = "Bid: $highestBid"
+                                                    highestBidderTextView.text = username
+                                                    highestBidTextView.text = bidStr
+                                                }
+                                            } catch (e: Exception) {
+                                                Log.e(TAG, e.toString())
+                                            }
                                         }
-                                    } catch (e: Exception) {
-                                        Log.e(TAG, e.toString())
                                     }
-                                }
+                                    override fun onCancelled(databaseError: DatabaseError) {
+                                        // do nothing
+                                    }
+                                })
                             }
                             override fun onCancelled(databaseError: DatabaseError) {
                                 // do nothing
@@ -224,25 +247,25 @@ class BidActivity : AppCompatActivity() {
                         // do nothing
                     }
                 })
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-                // do nothing
-            }
-        })
 
-        databaseCurrentGame.child("num_pass").addValueEventListener(object :
-            ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val passNum = dataSnapshot.getValue(Int::class.java) as Int
-                databaseCurrentGame.child("num_players").addListenerForSingleValueEvent(object :
+                databaseCurrentGame.child("round_$roundNum").child("num_pass").addValueEventListener(object :
                     ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val numPlayers = dataSnapshot.getValue(Int::class.java) as Int
-                        if (passNum == numPlayers - 1) {
-                            val highestBidderIntent = Intent(this@BidActivity, HighestBidderActivity::class.java)
-                            highestBidderIntent.putExtra("code", code)
-                            startActivity(highestBidderIntent)
-                        }
+                        val passNum = dataSnapshot.getValue(Int::class.java) as Int
+                        databaseCurrentGame.child("num_players").addListenerForSingleValueEvent(object :
+                            ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                val numPlayers = dataSnapshot.getValue(Int::class.java) as Int
+                                if (passNum == numPlayers - 1) {
+                                    val highestBidderIntent = Intent(this@BidActivity, HighestBidderActivity::class.java)
+                                    highestBidderIntent.putExtra("code", code)
+                                    startActivity(highestBidderIntent)
+                                }
+                            }
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                // do nothing
+                            }
+                        })
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                         // do nothing
