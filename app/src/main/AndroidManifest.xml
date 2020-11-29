@@ -35,6 +35,7 @@
         <activity android:name="AnswerActivity"/>
         <activity android:name="WaitReviewActivity"/>
         <activity android:name="ReviewActivity"/>
+        <activity android:name="ReviewAnswers"/>
         <activity android:name="NotImplementedActivity"/>
     </application>
 

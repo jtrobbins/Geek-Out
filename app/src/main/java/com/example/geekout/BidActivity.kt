@@ -202,6 +202,13 @@ class BidActivity : AppCompatActivity() {
                                             val bidStr = "Bid: $highestBid"
                                             highestBidderTextView.text = username
                                             highestBidTextView.text = bidStr
+
+                                            /*
+                                            val highestBidderIntent = Intent(this@BidActivity, HighestBidderActivity::class.java)
+                                            highestBidderIntent.putExtra("code", code)
+                                            startActivity(highestBidderIntent)
+
+                                             */
                                         }
                                     } catch (e: Exception) {
                                         Log.e(TAG, e.toString())

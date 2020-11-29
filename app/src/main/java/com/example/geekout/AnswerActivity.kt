@@ -143,9 +143,19 @@ class AnswerActivity : AppCompatActivity() {
                             }
                             Toast.makeText(applicationContext, "Answers submitted!", Toast.LENGTH_LONG).show()
                             databaseCurrentGame.child("answers_ready").setValue(true)
+
+                            /*
                             val waitReviewIntent = Intent(this@AnswerActivity, WaitReviewActivity::class.java)
                             waitReviewIntent.putExtra("code", code)
                             startActivity(waitReviewIntent)
+
+                             */
+
+                            val intent = Intent(this@AnswerActivity, ReviewAnswers::class.java)
+                            intent.putExtra("code", code)
+                            intent.putExtra("answers_list", answers)
+                            startActivity(intent)
+
                         }
                         override fun onCancelled(databaseError: DatabaseError) {
                             // do nothing
