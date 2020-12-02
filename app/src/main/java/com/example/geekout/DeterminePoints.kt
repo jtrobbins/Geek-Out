@@ -135,7 +135,7 @@ class DeterminePoints : AppCompatActivity(){
                                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                                     val pointsToWin = dataSnapshot.value as Long
 
-                                    if(pointsToWin >= currVal) {
+                                    if(pointsToWin == currVal) {
                                         mConstraintView.setOnClickListener {
                                             val intent = Intent(this@DeterminePoints, PlayerWon::class.java)
                                             intent.putExtra("bidder_uid",uid)
