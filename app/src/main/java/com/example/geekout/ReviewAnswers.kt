@@ -11,10 +11,13 @@ class ReviewAnswers : AppCompatActivity() {
     private lateinit var databaseGames: DatabaseReference
     private lateinit var databaseCurrentGame: DatabaseReference
     private lateinit var scoreboardButton: Button
+    private lateinit var submitButton: Button
     private lateinit var code: String
-    private var answers: ArrayList<String>? = ArrayList<String>()
+    private var mAnswers: MutableList<String>? = mutableListOf()
     private lateinit var mListView: ListView
-    private lateinit var adapter: ListViewAdapter
+    //private var roundNum = 1
+    private var highestBid: Long = 0
+    private lateinit var uid: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,24 +26,32 @@ class ReviewAnswers : AppCompatActivity() {
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
 
 
-        scoreboardButton = findViewById<Button>(R.id.scoreboardButton)
+        scoreboardButton = findViewById(R.id.scoreboardButton)
+        submitButton = findViewById(R.id.submitButton)
 
         code = intent.getStringExtra("code").toString()
+        highestBid = intent.getLongExtra("highest_bid", 1)
+        //roundNum = intent.getIntExtra("roundNum", 1)
+        uid = intent.getStringExtra("bidder_uid").toString()
+
         databaseCurrentGame = databaseGames.child(code)
 
         mListView = findViewById<ListView>(R.id.answersView)
 
+        databaseCurrentGame.child("round_num")
+            .addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val roundNum = dataSnapshot.value as Long
+                    addAnswersToList(roundNum, code)
+                }
 
-        answers = intent.getStringArrayListExtra("answers_list")
+                override fun onCancelled(p0: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
 
-        for(s in answers!!){
-            Log.i(TAG, s)
-        }
 
-        mListView.adapter = ListViewAdapter(this, R.layout.list_item, answers!!.toTypedArray())
-        mListView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-            val checkBoxView :CheckBox = view.findViewById(R.id.checkBox)
-        }
+
 
         scoreboardButton.setOnClickListener {
             val scoreboardIntent = Intent(this@ReviewAnswers, ScoreboardActivity::class.java)
@@ -48,6 +59,47 @@ class ReviewAnswers : AppCompatActivity() {
             startActivity(scoreboardIntent)
         }
 
+    }
+
+    private fun addAnswersToList(roundNum: Long, gameCode: String) {
+        var userAnswers = mutableListOf<String>()
+
+        for(i in 1 .. highestBid) {
+            databaseCurrentGame.child("round_$roundNum").child("answers")
+                .child("$i").addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        userAnswers!!.add(dataSnapshot.value.toString())
+                        if(userAnswers!!.size.toLong() == i) {
+                            generateList(userAnswers, roundNum, gameCode)
+                        }
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+
+                    }
+                })
+        }
+    }
+
+    private fun generateList(userAnswers: MutableList<String>, round_Num: Long, gameCode: String) {
+        mAnswers = userAnswers
+        mListView.adapter = ListViewAdapter(this, R.layout.list_item, round_Num, gameCode,
+            mAnswers!!.toTypedArray())
+        mListView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+            val checkBoxView  = view.findViewById<CheckBox>(R.id.checkBox)
+
+        }
+
+        submitButton.setOnClickListener{
+            val intent = Intent(this@ReviewAnswers, DeterminePoints::class.java)
+            intent.putExtra("code", code)
+            //intent.putExtra("roundNum", roundNum)
+            intent.putExtra("highestBid", highestBid)
+            intent.putExtra("userAnswers", mAnswers!!.toTypedArray())
+            intent.putExtra("bidder_uid", uid)
+            databaseCurrentGame.child("round_$round_Num")
+                .child("answers_reviewed").setValue(true)
+            startActivity(intent)
+        }
     }
 
     companion object {

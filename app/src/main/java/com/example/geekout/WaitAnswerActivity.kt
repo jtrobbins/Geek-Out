@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_bid.*
 
 class WaitAnswerActivity : AppCompatActivity() {
 
@@ -12,6 +13,9 @@ class WaitAnswerActivity : AppCompatActivity() {
     private lateinit var databaseCurrentGame: DatabaseReference
     private lateinit var scoreboardButton: Button
     private lateinit var code: String
+    private lateinit var uid: String
+    //private var roundNum :Int = 1
+    private var highestBid: Long = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +26,10 @@ class WaitAnswerActivity : AppCompatActivity() {
         scoreboardButton = findViewById<Button>(R.id.scoreboardButton)
 
         code = intent.getStringExtra("code").toString()
+        //roundNum = intent.getIntExtra("roundNum",1)
+        uid = intent.getStringExtra("bidder_uid").toString()
+        highestBid = intent.getLongExtra("highest_bid", 1)
+
         databaseCurrentGame = databaseGames.child(code)
 
         scoreboardButton.setOnClickListener {
@@ -34,29 +42,33 @@ class WaitAnswerActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
-            ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val roundNum = dataSnapshot.value.toString()
+        databaseCurrentGame.child("round_num")
+            .addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val roundNum = dataSnapshot.value as Long
+                    databaseCurrentGame.child("round_$roundNum").child("answers_ready")
+                        .addListenerForSingleValueEvent(object :ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                if(dataSnapshot.value == true) {
+                                    val intent = Intent(this@WaitAnswerActivity, ReviewAnswers::class.java)
+                                    intent.putExtra("code", code)
+                                    intent.putExtra("highest_bid", highestBid)
+                                    intent.putExtra("bidder_uid", uid)
+                                    startActivity(intent)
+                                }
+                            }
+                            override fun onCancelled(databaseError: DatabaseError) {
 
-                databaseCurrentGame.child("round_$roundNum").child("answers_ready").addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val isReady = dataSnapshot.getValue(Boolean::class.java) as Boolean
-                        if (isReady) {
-                            val reviewIntent = Intent(this@WaitAnswerActivity, ReviewActivity::class.java)
-                            reviewIntent.putExtra("code", code)
-                            startActivity(reviewIntent)
-                        }
-                    }
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        // do nothing
-                    }
-                })
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-                // do nothing
-            }
-        })
+                            }
+                        })
+                }
+
+                override fun onCancelled(p0: DatabaseError) {
+
+                }
+            })
+
+
 
     }
 

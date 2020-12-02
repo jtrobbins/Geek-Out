@@ -36,7 +36,8 @@
         <activity android:name="WaitReviewActivity"/>
         <activity android:name="ReviewActivity"/>
         <activity android:name="ReviewAnswers"/>
-        <activity android:name="NotImplementedActivity"/>
+        <activity android:name="DeterminePoints"/>
+        <activity android:name="PlayerWon"/>
     </application>
 
 </manifest>

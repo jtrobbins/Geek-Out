@@ -2,9 +2,11 @@ package com.example.geekout
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 
@@ -19,6 +21,8 @@ class AnswerActivity : AppCompatActivity() {
     private lateinit var categoryImageView: ImageView
     private lateinit var allEditText: ArrayList<EditText>
     private lateinit var code: String
+    private var highestBid: Long = 1
+    private lateinit var uid: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +30,7 @@ class AnswerActivity : AppCompatActivity() {
 
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
         databaseQuestions = FirebaseDatabase.getInstance().getReference("questions")
+        uid = FirebaseAuth.getInstance().currentUser!!.uid
 
         linearLayout = findViewById(R.id.linearLayout)
         roundTextView = findViewById(R.id.round)
@@ -35,6 +40,7 @@ class AnswerActivity : AppCompatActivity() {
         allEditText = arrayListOf<EditText>()
 
         code = intent.getStringExtra("code").toString()
+        highestBid = intent.getLongExtra("highest_bid", 1)
         databaseCurrentGame = databaseGames.child(code)
 
         databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
@@ -135,9 +141,15 @@ class AnswerActivity : AppCompatActivity() {
                             }
                             Toast.makeText(applicationContext, "Answers submitted!", Toast.LENGTH_LONG).show()
                             databaseCurrentGame.child("round_$roundNum").child("answers_ready").setValue(true)
+                            databaseCurrentGame.child("round_$roundNum").child("answers_reviewed").setValue(false)
+
                             val waitReviewIntent = Intent(this@AnswerActivity, WaitReviewActivity::class.java)
                             waitReviewIntent.putExtra("code", code)
+                            waitReviewIntent.putExtra("highest_bid", highestBid)
+                            waitReviewIntent.putExtra("bidder_uid", uid)
+                            waitReviewIntent.putExtra("userAnswers", answers!!.toTypedArray())
                             startActivity(waitReviewIntent)
+
                         }
                         linearLayout.addView(submitButton)
 

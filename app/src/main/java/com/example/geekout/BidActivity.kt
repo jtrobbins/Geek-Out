@@ -25,6 +25,7 @@ class BidActivity : AppCompatActivity() {
     private lateinit var code: String
     private lateinit var uid: String
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bid)
@@ -227,6 +228,7 @@ class BidActivity : AppCompatActivity() {
                                                     val bidStr = "Bid: $highestBid"
                                                     highestBidderTextView.text = username
                                                     highestBidTextView.text = bidStr
+
                                                 }
                                             } catch (e: Exception) {
                                                 Log.e(TAG, e.toString())
@@ -256,11 +258,24 @@ class BidActivity : AppCompatActivity() {
                             ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 val numPlayers = dataSnapshot.getValue(Int::class.java) as Int
-                                if (passNum == numPlayers - 1) {
-                                    val highestBidderIntent = Intent(this@BidActivity, HighestBidderActivity::class.java)
-                                    highestBidderIntent.putExtra("code", code)
-                                    startActivity(highestBidderIntent)
-                                }
+                                databaseCurrentGame.child("round_$roundNum")
+                                    .child("highest_bid").addListenerForSingleValueEvent(object: ValueEventListener {
+                                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                            val highestBid = dataSnapshot.value as Long
+                                            if (passNum == numPlayers - 1) {
+                                                val highestBidderIntent = Intent(this@BidActivity, HighestBidderActivity::class.java)
+                                                highestBidderIntent.putExtra("code", code)
+                                                highestBidderIntent.putExtra("highest_bid", highestBid)
+                                                startActivity(highestBidderIntent)
+                                            }
+                                        }
+
+                                        override fun onCancelled(databaseError: DatabaseError) {
+                                            // do nothing
+                                        }
+
+                                    })
+
                             }
                             override fun onCancelled(databaseError: DatabaseError) {
                                 // do nothing

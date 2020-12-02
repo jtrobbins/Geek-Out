@@ -58,7 +58,6 @@ class StartGameActivity: AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
         databaseCurrentGame.child("players").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 players.clear()

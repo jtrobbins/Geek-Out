@@ -15,6 +15,7 @@ class HighestBidderActivity : AppCompatActivity() {
     private lateinit var databaseGames: DatabaseReference
     private lateinit var databaseCurrentGame: DatabaseReference
     private lateinit var highestBidderTextView: TextView
+    private var highestBid: Long = 1
     private lateinit var code: String
     private lateinit var uid: String
 
@@ -27,6 +28,7 @@ class HighestBidderActivity : AppCompatActivity() {
         highestBidderTextView = findViewById(R.id.highestBidderText)
 
         code = intent.getStringExtra("code").toString()
+        highestBid = intent.getLongExtra("highest_bid", 1)
         databaseCurrentGame = databaseGames.child(code)
 
         uid = FirebaseAuth.getInstance().currentUser!!.uid
@@ -86,12 +88,17 @@ class HighestBidderActivity : AppCompatActivity() {
                                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                                     val playerNum = dataSnapshot.getValue(Int::class.java) as Int
                                     if (playerNum == highestBidder) {
+                                        Log.i(TAG, "HIT HBA GOING TO AA")
                                         val answerIntent = Intent(this@HighestBidderActivity, AnswerActivity::class.java)
                                         answerIntent.putExtra("code", code)
+                                        answerIntent.putExtra("highest_bid", highestBid)
                                         startActivity(answerIntent)
                                     } else {
                                         val waitIntent = Intent(this@HighestBidderActivity, WaitAnswerActivity::class.java)
                                         waitIntent.putExtra("code", code)
+                                        waitIntent.putExtra("highest_bid", highestBid)
+                                        waitIntent.putExtra("bidder_uid", uid)
+                                        //waitIntent.putExtra("roundNum", roundNum.toInt())
                                         startActivity(waitIntent)
                                     }
                                 }

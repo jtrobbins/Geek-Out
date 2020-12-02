@@ -14,6 +14,7 @@ class NewRoundActivity : AppCompatActivity() {
 
     private lateinit var databaseGames: DatabaseReference
     private lateinit var databaseCurrentGame: DatabaseReference
+    private lateinit var databaseQuestions: DatabaseReference
     private lateinit var roundTextView: TextView
     private lateinit var code: String
 
@@ -27,6 +28,7 @@ class NewRoundActivity : AppCompatActivity() {
 
         code = intent.getStringExtra("code").toString()
         databaseCurrentGame = databaseGames.child(code)
+        databaseQuestions = FirebaseDatabase.getInstance().getReference("questions")
 
         databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
             ValueEventListener {
@@ -39,6 +41,24 @@ class NewRoundActivity : AppCompatActivity() {
 
                 val roundStr = "Round $roundNum"
                 roundTextView.text = roundStr
+
+                if(roundNum.toInt() > 1) {
+                    databaseQuestions.child("num_questions").addListenerForSingleValueEvent(object :
+                        ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            val numQuestions = dataSnapshot.getValue(Int::class.java) as Int
+                            val randQuestionNum = (1..numQuestions).random()
+                            databaseGames.child(code).child("round_$roundNum")
+                                .child("question_num").setValue(randQuestionNum)
+
+                            databaseGames.child(code).child("round_$roundNum")
+                                .child("answers_ready").setValue(false)
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // do nothing
+                        }
+                    })
+                }
             }
             override fun onCancelled(databaseError: DatabaseError) {
                 // do nothing

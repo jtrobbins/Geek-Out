@@ -2,23 +2,25 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/submit"
+    android:id="@+id/dpLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/review_answers"
-        android:layout_width="182dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="112dp"
-        android:layout_marginTop="56dp"
-        android:text="Review Answers"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:id="@+id/answersAccepted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="147dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginBottom="636dp"
+        android:text="Accepted Answers"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ListView
-        android:id="@+id/answersView"
+        android:id="@+id/updatedAnswersView"
         android:layout_width="297dp"
         android:layout_height="471dp"
         android:layout_marginStart="52dp"
@@ -36,17 +38,4 @@
         android:text="@string/scoreboard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="159dp"
-        android:layout_marginTop="675dp"
-        android:layout_marginBottom="8dp"
-        android:text="Submit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
