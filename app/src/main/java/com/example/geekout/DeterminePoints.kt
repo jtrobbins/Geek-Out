@@ -7,6 +7,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.database.*
+import java.util.*
+import kotlin.concurrent.schedule
 
 class DeterminePoints : AppCompatActivity(){
 
@@ -42,7 +44,7 @@ class DeterminePoints : AppCompatActivity(){
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val numPlayers = dataSnapshot.value as Long
                     databaseCurrentGame.child("round_num")
-                        .addValueEventListener(object: ValueEventListener {
+                        .addListenerForSingleValueEvent(object: ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 val roundNum = dataSnapshot.value as Long
                                 addAnswersToList(numPlayers, roundNum)
@@ -71,6 +73,31 @@ class DeterminePoints : AppCompatActivity(){
     override fun onStart() {
         super.onStart()
 
+        databaseCurrentGame.child("winner").addListenerForSingleValueEvent(object: ValueEventListener {
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if(p0.value == null) {
+                    Log.i(TAG, "Game not yet over")
+                    mConstraintView.setOnClickListener {
+                        val intent = Intent(this@DeterminePoints, NewRoundActivity::class.java)
+                        intent.putExtra("code", code)
+                        startActivity(intent)
+                    }
+                }
+                else {
+                    mConstraintView.setOnClickListener {
+                        Log.i(TAG, "Game over")
+                        val intent = Intent(this@DeterminePoints, PlayerWon::class.java)
+                        intent.putExtra("bidder_uid",uid)
+                        startActivity(intent)
+                    }
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
     private fun addAnswersToList(numPlayers: Long, roundNum: Long) {
@@ -88,10 +115,7 @@ class DeterminePoints : AppCompatActivity(){
                             mDisplayAnswers!!.add(a)
                         }
 
-                        //Log.i(TAG, "A: $a UA: ${updatedAnswers.get(updatedAnswers.size-1)}")
-
                         if(a == updatedAnswers.get(updatedAnswers.size-1)) {
-                            Log.i(TAG, "Ça doit passer qu'une fois")
                             generateList(mDisplayAnswers!!.toTypedArray(), roundNum)
                         }
 
@@ -117,14 +141,14 @@ class DeterminePoints : AppCompatActivity(){
 
     private fun updatePoints(mDisplayAnswers: Array<String>, roundNum: Long) {
         Log.i(TAG, "Round Num: $roundNum Updating list")
-        if(mDisplayAnswers.size >= highestBid) {
-            databaseCurrentGame.child("players").child("$uid")
-                .child("points")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        var currVal = dataSnapshot.value as Long
-                        currVal++
+        databaseCurrentGame.child("players").child("$uid")
+            .child("points")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    var currVal = dataSnapshot.value as Long
+                    currVal++
 
+                    if(mDisplayAnswers.size >= highestBid) {
                         databaseCurrentGame.child("players")
                             .child("$uid").child("points")
                             .setValue(currVal)
@@ -136,23 +160,15 @@ class DeterminePoints : AppCompatActivity(){
                                     val pointsToWin = dataSnapshot.value as Long
 
                                     if(pointsToWin == currVal) {
-                                        mConstraintView.setOnClickListener {
-                                            val intent = Intent(this@DeterminePoints, PlayerWon::class.java)
-                                            intent.putExtra("bidder_uid",uid)
-                                            startActivity(intent)
-                                        }
+                                        databaseCurrentGame.child("winner").setValue(uid)
+                                        Toast.makeText(applicationContext, "Game over! Click to continue", Toast.LENGTH_LONG)
+                                            .show()
                                     }
                                     else {
-                                        mConstraintView.setOnClickListener {
-
-                                            val updatedRoundNum = roundNum+1
-
-                                            val intent = Intent(this@DeterminePoints, NewRoundActivity::class.java)
-                                            databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
-                                            intent.putExtra("code", code)
-                                            startActivity(intent)
-
-                                        }
+                                        val updatedRoundNum = roundNum+1
+                                        databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
+                                        Toast.makeText(applicationContext, "$uid won the bet! Click to continue", Toast.LENGTH_LONG)
+                                            .show()
                                     }
 
                                 }
@@ -161,27 +177,25 @@ class DeterminePoints : AppCompatActivity(){
 
                                 }
                             })
-
                     }
-                    override fun onCancelled(databaseError: DatabaseError) {
-
+                    else {
+                        Toast.makeText(applicationContext, "$uid did not win the bet! Click to continue", Toast.LENGTH_LONG)
+                            .show()
                     }
-                })
 
-        }
-        else {
-            mConstraintView.setOnClickListener {
-                val updatedRoundNum = roundNum+1
-                val intent = Intent(this@DeterminePoints, NewRoundActivity::class.java)
-                databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
-                intent.putExtra("code", code)
-                startActivity(intent)
-            }
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
 
-        }
+                }
+            })
     }
 
     companion object {
         private const val TAG = "GeekOut:DeterminePoints"
     }
+
+    /*
+
+
+     */
 }

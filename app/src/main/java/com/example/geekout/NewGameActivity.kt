@@ -50,7 +50,7 @@ class NewGameActivity : AppCompatActivity() {
         databaseGames.child(code).child("num_players").setValue(1)
         databaseGames.child(code).child("round_num").setValue(1)
         databaseGames.child(code).child("round_1").child("answers_ready").setValue(false)
-        databaseGames.child(code).child("winning_points").setValue(5)
+        databaseGames.child(code).child("winning_points").setValue(3)
         databaseUsers.child(uid).child("username").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val username = dataSnapshot.value.toString()

@@ -88,7 +88,6 @@ class HighestBidderActivity : AppCompatActivity() {
                                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                                     val playerNum = dataSnapshot.getValue(Int::class.java) as Int
                                     if (playerNum == highestBidder) {
-                                        Log.i(TAG, "HIT HBA GOING TO AA")
                                         val answerIntent = Intent(this@HighestBidderActivity, AnswerActivity::class.java)
                                         answerIntent.putExtra("code", code)
                                         answerIntent.putExtra("highest_bid", highestBid)
