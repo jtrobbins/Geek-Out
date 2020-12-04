@@ -13,7 +13,7 @@ class BeforeRoundEndActivity: AppCompatActivity(){
     private lateinit var scoreboardButton: Button
     private lateinit var userAnswers: Array<String>
     private lateinit var code: String
-    private lateinit var uid: String
+    //private lateinit var uid: String
     private var highestBid: Long = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +57,7 @@ class BeforeRoundEndActivity: AppCompatActivity(){
                                                     DeterminePointsActivity::class.java)
                                                 intent.putExtra("code", code)
                                                 intent.putExtra("highestBid", highestBid)
-                                                intent.putExtra("bidder_uid", uid)
+                                                //intent.putExtra("bidder_uid", uid)
                                                 intent.putExtra("userAnswers", userAnswers)
                                                 startActivity(intent)
                                             }

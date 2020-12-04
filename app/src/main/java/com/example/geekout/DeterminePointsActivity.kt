@@ -59,9 +59,6 @@ class DeterminePointsActivity : AppCompatActivity(){
                 }
             })
 
-
-
-
         scoreboardButton.setOnClickListener {
             val scoreboardIntent = Intent(this@DeterminePointsActivity, ScoreboardActivity::class.java)
             scoreboardIntent.putExtra("code", code)
@@ -113,8 +110,14 @@ class DeterminePointsActivity : AppCompatActivity(){
         databaseCurrentGame.child("round_$roundNum").child("highest_bidder_uid")
             .addListenerForSingleValueEvent(object:ValueEventListener {
                 override fun onDataChange(p0: DataSnapshot) {
-                    val highest_uid = p0.value as String
-                    updatePoints(mDisplayAnswers, roundNum, highest_uid)
+                    if(p0.value == null) {
+                        Log.i(TAG, "ROUND NUM: $roundNum")
+                    }
+                    else {
+                        val highest_uid = p0.value as String
+                        updatePoints(mDisplayAnswers, roundNum, highest_uid)
+                    }
+
                 }
 
                 override fun onCancelled(p0: DatabaseError) {
