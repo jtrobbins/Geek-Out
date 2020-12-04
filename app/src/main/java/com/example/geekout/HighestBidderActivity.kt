@@ -96,8 +96,7 @@ class HighestBidderActivity : AppCompatActivity() {
                                         val waitIntent = Intent(this@HighestBidderActivity, WaitAnswerActivity::class.java)
                                         waitIntent.putExtra("code", code)
                                         waitIntent.putExtra("highest_bid", highestBid)
-                                        waitIntent.putExtra("bidder_uid", uid)
-                                        //waitIntent.putExtra("roundNum", roundNum.toInt())
+                                        //waitIntent.putExtra("bidder_uid", uid)
                                         startActivity(waitIntent)
                                     }
                                 }

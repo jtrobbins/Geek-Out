@@ -19,7 +19,7 @@ class DeterminePointsActivity : AppCompatActivity(){
     private lateinit var mListView: ListView
     private lateinit var mConstraintView :ConstraintLayout
     private var highestBid: Long = 0
-    private lateinit var uid: String
+    //private lateinit var uid: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +31,7 @@ class DeterminePointsActivity : AppCompatActivity(){
 
         code = intent.getStringExtra("code").toString()
         highestBid = intent.getLongExtra("highestBid", 1)
-        uid = intent.getStringExtra("bidder_uid").toString()
+        //uid = intent.getStringExtra("bidder_uid").toString()
         updatedAnswers = intent.getStringArrayExtra("userAnswers")!! as Array<String>
 
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
@@ -60,6 +60,8 @@ class DeterminePointsActivity : AppCompatActivity(){
             })
 
 
+
+
         scoreboardButton.setOnClickListener {
             val scoreboardIntent = Intent(this@DeterminePointsActivity, ScoreboardActivity::class.java)
             scoreboardIntent.putExtra("code", code)
@@ -70,33 +72,8 @@ class DeterminePointsActivity : AppCompatActivity(){
 
     override fun onStart() {
         super.onStart()
+        gameContinueOrOver()
 
-        databaseCurrentGame.child("winner").addListenerForSingleValueEvent(object: ValueEventListener {
-
-            override fun onDataChange(p0: DataSnapshot) {
-                if(p0.value == null) {
-                    Log.i(TAG, "Game not yet over")
-                    mConstraintView.setOnClickListener {
-                        val intent = Intent(this@DeterminePointsActivity, NewRoundActivity::class.java)
-                        intent.putExtra("code", code)
-                        startActivity(intent)
-                    }
-                }
-                else {
-                    mConstraintView.setOnClickListener {
-                        Log.i(TAG, "Game over")
-                        val intent = Intent(this@DeterminePointsActivity, PlayerWonActivity::class.java)
-                        intent.putExtra("bidder_uid",uid)
-                        intent.putExtra("code", code)
-                        startActivity(intent)
-                    }
-                }
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
     }
 
     private fun addAnswersToList(numPlayers: Long, roundNum: Long) {
@@ -117,8 +94,6 @@ class DeterminePointsActivity : AppCompatActivity(){
                         if(a == updatedAnswers.get(updatedAnswers.size-1)) {
                             generateList(mDisplayAnswers!!.toTypedArray(), roundNum)
                         }
-
-
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
 
@@ -135,10 +110,20 @@ class DeterminePointsActivity : AppCompatActivity(){
             val textView  = view.findViewById<TextView>(R.id.textViewList)
         }
 
-        updatePoints(mDisplayAnswers, roundNum)
+        databaseCurrentGame.child("round_$roundNum").child("highest_bidder_uid")
+            .addListenerForSingleValueEvent(object:ValueEventListener {
+                override fun onDataChange(p0: DataSnapshot) {
+                    val highest_uid = p0.value as String
+                    updatePoints(mDisplayAnswers, roundNum, highest_uid)
+                }
+
+                override fun onCancelled(p0: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
     }
 
-    private fun updatePoints(mDisplayAnswers: Array<String>, roundNum: Long) {
+    private fun updatePoints(mDisplayAnswers: Array<String>, roundNum: Long, uid: String) {
         Log.i(TAG, "Round Num: $roundNum Updating list")
         databaseCurrentGame.child("players").child("$uid")
             .child("points")
@@ -162,7 +147,7 @@ class DeterminePointsActivity : AppCompatActivity(){
                                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                                 val pointsToWin = dataSnapshot.value as Long
 
-                                                if(pointsToWin >= currVal) {
+                                                if(currVal == pointsToWin) {
                                                     databaseCurrentGame.child("winner").setValue(uid)
                                                     Toast.makeText(applicationContext,
                                                         "Game over! Click to continue", Toast.LENGTH_LONG)
@@ -190,6 +175,7 @@ class DeterminePointsActivity : AppCompatActivity(){
                                         "$username did not win the bet! Click to continue", Toast.LENGTH_LONG)
                                         .show()
                                 }
+                                //gameContinueOrOver()
                             }
 
                             override fun onCancelled(p0: DatabaseError) {
@@ -202,6 +188,34 @@ class DeterminePointsActivity : AppCompatActivity(){
 
                 }
             })
+    }
+
+    private fun gameContinueOrOver() {
+        databaseCurrentGame.child("winner").addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                if(p0.value == null) {
+                    Log.i(TAG, "Game not yet over")
+                    mConstraintView.setOnClickListener {
+                        val intent = Intent(this@DeterminePointsActivity, NewRoundActivity::class.java)
+                        intent.putExtra("code", code)
+                        startActivity(intent)
+                    }
+                }
+                else {
+                    mConstraintView.setOnClickListener {
+                        Log.i(TAG, "Game over")
+                        val intent = Intent(this@DeterminePointsActivity, PlayerWonActivity::class.java)
+                        //intent.putExtra("bidder_uid",uid)
+                        intent.putExtra("code", code)
+                        startActivity(intent)
+                    }
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
     companion object {

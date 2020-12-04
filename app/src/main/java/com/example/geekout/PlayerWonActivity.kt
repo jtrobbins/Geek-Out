@@ -14,7 +14,7 @@ class PlayerWonActivity : AppCompatActivity() {
     private lateinit var mConstraintView : ConstraintLayout
     private lateinit var mTextView :TextView
     private lateinit var code: String
-    private lateinit var uid: String
+    //private lateinit var uid: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,23 +24,29 @@ class PlayerWonActivity : AppCompatActivity() {
         mTextView = findViewById(R.id.playerWon)
 
         code = intent.getStringExtra("code").toString()
-        uid = intent.getStringExtra("bidder_uid").toString()
+        //uid = intent.getStringExtra("bidder_uid").toString()
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
         databaseCurrentGame = databaseGames.child(code)
 
-        databaseCurrentGame.child("players").child("$uid").child("username")
-            .addListenerForSingleValueEvent(object: ValueEventListener {
-                override fun onDataChange(p0: DataSnapshot) {
-                    val userName = p0.value as String
-                    mTextView.text = "$userName WON THE GAME!"
-                }
+        databaseCurrentGame.child("winner").addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                val uid = p0.value as String
+                databaseCurrentGame.child("players").child("$uid").child("username")
+                    .addListenerForSingleValueEvent(object: ValueEventListener {
+                        override fun onDataChange(p0: DataSnapshot) {
+                            val userName = p0.value as String
+                            mTextView.text = "$userName WON THE GAME!"
+                        }
 
-                override fun onCancelled(p0: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-
-
+                        override fun onCancelled(p0: DatabaseError) {
+                            TODO("Not yet implemented")
+                        }
+                    })
+            }
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
 
     }
 

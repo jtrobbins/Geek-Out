@@ -52,7 +52,7 @@ class WaitAnswerActivity : AppCompatActivity() {
                                     val intent = Intent(this@WaitAnswerActivity, ReviewAnswersActivity::class.java)
                                     intent.putExtra("code", code)
                                     intent.putExtra("highest_bid", highestBid)
-                                    intent.putExtra("bidder_uid", uid)
+                                    //intent.putExtra("bidder_uid", uid)
                                     startActivity(intent)
                                 }
                             }

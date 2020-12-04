@@ -26,7 +26,7 @@ class BeforeRoundEndActivity: AppCompatActivity(){
 
         code = intent.getStringExtra("code").toString()
         highestBid = intent.getLongExtra("highest_bid", 1)
-        uid = intent.getStringExtra("bidder_uid").toString()
+        //uid = intent.getStringExtra("bidder_uid").toString()
         userAnswers = intent.getStringArrayExtra("userAnswers")!! as Array<String>
         databaseCurrentGame = databaseGames.child(code)
 

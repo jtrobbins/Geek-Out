@@ -102,7 +102,7 @@ class ReviewAnswersActivity : AppCompatActivity() {
             //intent.putExtra("roundNum", roundNum)
             intent.putExtra("highestBid", highestBid)
             intent.putExtra("userAnswers", mAnswers!!.toTypedArray())
-            intent.putExtra("bidder_uid", uid)
+            //intent.putExtra("bidder_uid", uid)
             databaseCurrentGame.child("round_$round_Num")
                 .child("answers_reviewed").child("$currUid").setValue(true)
             startActivity(intent)

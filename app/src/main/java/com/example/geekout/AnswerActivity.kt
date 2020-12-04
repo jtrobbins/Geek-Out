@@ -146,7 +146,7 @@ class AnswerActivity : AppCompatActivity() {
                             val waitReviewIntent = Intent(this@AnswerActivity, WaitReviewActivity::class.java)
                             waitReviewIntent.putExtra("code", code)
                             waitReviewIntent.putExtra("highest_bid", highestBid)
-                            waitReviewIntent.putExtra("bidder_uid", uid)
+                            //waitReviewIntent.putExtra("bidder_uid", uid)
                             waitReviewIntent.putExtra("userAnswers", answers!!.toTypedArray())
                             startActivity(waitReviewIntent)
 
