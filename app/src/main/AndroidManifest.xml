@@ -11,35 +11,58 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".SplashActivity">
+        <activity android:name=".SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="LoginRegistrationActivity"/>
-        <activity android:name="RegistrationActivity"/>
-        <activity android:name="LoginActivity"/>
-        <activity android:name="MainActivity"/>
-        <activity android:name="NewGameActivity"/>
-        <activity android:name="JoinGameActivity"/>
-        <activity android:name="StartGameActivity"/>
-        <activity android:name="UserSettingsActivity"/>
-        <activity android:name="RulesActivity"/>
-        <activity android:name="ScoreboardActivity"/>
-        <activity android:name="BidActivity"/>
-        <activity android:name="NewRoundActivity"/>
-        <activity android:name="HighestBidderActivity"/>
-        <activity android:name="WaitAnswerActivity"/>
-        <activity android:name="AnswerActivity"/>
-        <activity android:name="WaitReviewActivity"/>
-        <activity android:name="ReviewActivity"/>
-        <activity android:name="ReviewAnswersActivity"/>
-        <activity android:name="DeterminePointsActivity"/>
-        <activity android:name="PlayerWonActivity"/>
-        <activity android:name="UpdatePointsActivity"/>
-        <activity android:name="BeforeRoundEndActivity"/>
+        <activity android:name="LoginRegistrationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="RegistrationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="NewGameActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="JoinGameActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="StartGameActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="UserSettingsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="RulesActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="ScoreboardActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="BidActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="NewRoundActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="HighestBidderActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="WaitAnswerActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="AnswerActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="WaitReviewActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="ReviewActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="ReviewAnswersActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="DeterminePointsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="PlayerWonActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="UpdatePointsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="BeforeRoundEndActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
