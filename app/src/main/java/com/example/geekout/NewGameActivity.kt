@@ -85,6 +85,10 @@ class NewGameActivity : AppCompatActivity() {
         return code
     }
 
+    override fun onBackPressed() {
+        // do nothing
+    }
+
     companion object {
         private const val TAG = "GeekOut:NewGameActivity"
     }

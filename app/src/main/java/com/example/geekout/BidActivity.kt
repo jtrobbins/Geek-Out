@@ -295,6 +295,11 @@ class BidActivity : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+        // do nothing
+    }
+
+
     companion object {
         private const val TAG = "GeekOut:BidActivity"
     }

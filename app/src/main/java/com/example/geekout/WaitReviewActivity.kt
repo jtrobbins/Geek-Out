@@ -80,9 +80,12 @@ class WaitReviewActivity : AppCompatActivity() {
                 }
         })
 
-
-
     }
+
+    override fun onBackPressed() {
+        // do nothing
+    }
+
     companion object {
         private const val TAG = "GeekOut:WaitReviewActivity"
     }
