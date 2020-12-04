@@ -79,11 +79,12 @@ class DeterminePointsActivity : AppCompatActivity(){
     private fun addAnswersToList(numPlayers: Long, roundNum: Long) {
         for(a in updatedAnswers) {
             databaseCurrentGame.child("round_$roundNum").child("answers")
-                .child("$a").child("Contested").addListenerForSingleValueEvent(object : ValueEventListener {
+                .child("$a").child("Contested").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         if(dataSnapshot.value != null) {
                             val contestVal = dataSnapshot.value as Long
                             if(contestVal < (numPlayers-1)/2) {
+                                //databaseCurrentGame.child("accepted_answers").child(a)
                                 mDisplayAnswers!!.add(a)
                             }
                         }
