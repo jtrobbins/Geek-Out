@@ -7,6 +7,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.database.*
+import java.util.*
+import kotlin.concurrent.schedule
 
 class DeterminePointsActivity : AppCompatActivity(){
 
@@ -160,14 +162,14 @@ class DeterminePointsActivity : AppCompatActivity(){
                                                                 if(currVal == pointsToWin) {
                                                                     databaseCurrentGame.child("winner").setValue(uid)
                                                                     Toast.makeText(applicationContext,
-                                                                        "Game over! Click to continue", Toast.LENGTH_LONG)
+                                                                        "Game over!", Toast.LENGTH_LONG)
                                                                         .show()
                                                                 }
                                                                 else {
                                                                     val updatedRoundNum = roundNum+1
                                                                     databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
                                                                     Toast.makeText(applicationContext,
-                                                                        "$username won the bet! Click to continue", Toast.LENGTH_LONG)
+                                                                        "$username won the bet!", Toast.LENGTH_LONG)
                                                                         .show()
                                                                 }
 
@@ -182,7 +184,7 @@ class DeterminePointsActivity : AppCompatActivity(){
                                                     val updatedRoundNum = roundNum+1
                                                     databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
                                                     Toast.makeText(applicationContext,
-                                                        "$username did not win the bet! Click to continue", Toast.LENGTH_LONG)
+                                                        "$username did not win the bet!", Toast.LENGTH_LONG)
                                                         .show()
                                                 }
                                             }
@@ -213,14 +215,14 @@ class DeterminePointsActivity : AppCompatActivity(){
             override fun onDataChange(p0: DataSnapshot) {
                 if(p0.value == null) {
                     Log.i(TAG, "Game not yet over")
-                    mConstraintView.setOnClickListener {
+                    Timer().schedule(3000) {
                         val intent = Intent(this@DeterminePointsActivity, NewRoundActivity::class.java)
                         intent.putExtra("code", code)
                         startActivity(intent)
                     }
                 }
                 else {
-                    mConstraintView.setOnClickListener {
+                    Timer().schedule(3000){
                         Log.i(TAG, "Game over")
                         val intent = Intent(this@DeterminePointsActivity, PlayerWonActivity::class.java)
                         //intent.putExtra("bidder_uid",uid)
