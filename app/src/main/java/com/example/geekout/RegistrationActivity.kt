@@ -16,10 +16,11 @@ class RegistrationActivity : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
     private lateinit var databaseUsers: DatabaseReference
     private lateinit var uid: String
-    private lateinit var emailTV: EditText
-    private lateinit var usernameTV: EditText
-    private lateinit var passwordTV: EditText
-    private lateinit var regBtn: Button
+    private lateinit var emailTextView: EditText
+    private lateinit var usernameTextView: EditText
+    private lateinit var passwordTextView: EditText
+    private lateinit var registerButton: Button
+    private var epValidator = EmailPasswordValidator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,30 +29,30 @@ class RegistrationActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         databaseUsers = FirebaseDatabase.getInstance().getReference("users")
 
-        emailTV = findViewById(R.id.email)
-        usernameTV = findViewById(R.id.username)
-        passwordTV = findViewById(R.id.password)
-        regBtn = findViewById(R.id.register)
+        emailTextView = findViewById(R.id.email)
+        usernameTextView = findViewById(R.id.username)
+        passwordTextView = findViewById(R.id.password)
+        registerButton = findViewById(R.id.register)
 
-        regBtn.setOnClickListener { registerNewUser() }
+        registerButton.setOnClickListener { registerNewUser() }
     }
 
     private fun registerNewUser() {
 
-        val email: String = emailTV.text.toString()
-        val username: String = usernameTV.text.toString()
-        val password: String = passwordTV.text.toString()
+        val email: String = emailTextView.text.toString()
+        val username: String = usernameTextView.text.toString()
+        val password: String = passwordTextView.text.toString()
 
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(applicationContext, "Please enter email...", Toast.LENGTH_LONG).show()
+        if (!epValidator.validEmail(email)) {
+            Toast.makeText(applicationContext, "Please enter an email!", Toast.LENGTH_LONG).show()
             return
         }
         if (TextUtils.isEmpty(username)) {
-            Toast.makeText(applicationContext, "Please enter username...", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Please enter a username!", Toast.LENGTH_LONG).show()
             return
         }
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(applicationContext, "Please enter password!", Toast.LENGTH_LONG).show()
+        if (!epValidator.validPassword(password)) {
+            Toast.makeText(applicationContext, "Please enter a password!", Toast.LENGTH_LONG).show()
             return
         }
 

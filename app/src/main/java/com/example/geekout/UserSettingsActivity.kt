@@ -18,6 +18,7 @@ class UserSettingsActivity : AppCompatActivity() {
     private lateinit var passwordTextView: EditText
     private lateinit var saveButton: Button
     private lateinit var uid: String
+    private var epValidator = EmailPasswordValidator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,11 +41,11 @@ class UserSettingsActivity : AppCompatActivity() {
         val username: String = usernameTextView.text.toString()
         val password: String = passwordTextView.text.toString()
 
-        if (TextUtils.isEmpty(username) && TextUtils.isEmpty(password)) {
-            Toast.makeText(applicationContext, "Please enter a username or password...", Toast.LENGTH_LONG).show()
+        if (TextUtils.isEmpty(username) && !epValidator.validPassword(password)) {
+            Toast.makeText(applicationContext, "Please enter a username or password!", Toast.LENGTH_LONG).show()
             return
         }
-        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+        if (!TextUtils.isEmpty(username) && !epValidator.validPassword(password)) {
             changeUsername(username)
             changePassword(password)
             Toast.makeText(applicationContext, "Username and password successfully changed!", Toast.LENGTH_LONG).show()
@@ -53,7 +54,7 @@ class UserSettingsActivity : AppCompatActivity() {
             changeUsername(username)
             Toast.makeText(applicationContext, "Username successfully changed!", Toast.LENGTH_LONG).show()
         }
-        if (!TextUtils.isEmpty(password)) {
+        if (!epValidator.validPassword(password)) {
             changePassword(password)
             Toast.makeText(applicationContext, "Password successfully changed!", Toast.LENGTH_LONG).show()
         }

@@ -46,7 +46,7 @@ class WaitAnswerActivity : AppCompatActivity() {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val roundNum = dataSnapshot.value as Long
                     databaseCurrentGame.child("round_$roundNum").child("answers_ready")
-                        .addListenerForSingleValueEvent(object :ValueEventListener {
+                        .addValueEventListener(object :ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 if(dataSnapshot.value == true) {
                                     val intent = Intent(this@WaitAnswerActivity, ReviewAnswersActivity::class.java)
