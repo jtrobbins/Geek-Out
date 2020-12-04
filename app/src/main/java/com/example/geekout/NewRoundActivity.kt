@@ -35,30 +35,50 @@ class NewRoundActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val roundNum = dataSnapshot.value.toString()
 
-                databaseCurrentGame.child("round_$roundNum").child("num_pass").setValue(0)
-                databaseCurrentGame.child("round_$roundNum").child("highest_bid").setValue(1)
-                databaseCurrentGame.child("round_$roundNum").child("highest_bidder").setValue(1)
+                databaseCurrentGame.child("players").addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                val roundStr = "Round $roundNum"
-                roundTextView.text = roundStr
-
-                if(roundNum.toInt() > 1) {
-                    databaseQuestions.child("num_questions").addListenerForSingleValueEvent(object :
-                        ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val numQuestions = dataSnapshot.getValue(Int::class.java) as Int
-                            val randQuestionNum = (1..numQuestions).random()
-                            databaseGames.child(code).child("round_$roundNum")
-                                .child("question_num").setValue(randQuestionNum)
-
-                            databaseGames.child(code).child("round_$roundNum")
-                                .child("answers_ready").setValue(false)
+                        for (postSnapshot in dataSnapshot.children) {
+                            val user = postSnapshot.getValue(Player::class.java)
+                            if (user!!.player_num == 1) {
+                                val userUid = postSnapshot.ref.key
+                                databaseCurrentGame.child("round_$roundNum").child("highest_bidder_uid").setValue(userUid)
+                            }
                         }
-                        override fun onCancelled(databaseError: DatabaseError) {
-                            // do nothing
+
+                        databaseCurrentGame.child("round_$roundNum").child("num_pass").setValue(0)
+                        databaseCurrentGame.child("round_$roundNum").child("highest_bid").setValue(1)
+                        databaseCurrentGame.child("round_$roundNum").child("highest_bidder").setValue(1)
+
+                        val roundStr = "Round $roundNum"
+                        roundTextView.text = roundStr
+
+                        if(roundNum.toInt() > 1) {
+                            databaseQuestions.child("num_questions").addListenerForSingleValueEvent(object :
+                                ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    val numQuestions = dataSnapshot.getValue(Int::class.java) as Int
+                                    val randQuestionNum = (1..numQuestions).random()
+                                    databaseGames.child(code).child("round_$roundNum")
+                                        .child("question_num").setValue(randQuestionNum)
+
+                                    databaseGames.child(code).child("round_$roundNum")
+                                        .child("answers_ready").setValue(false)
+                                }
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                    // do nothing
+                                }
+                            })
                         }
-                    })
-                }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // do nothing
+                    }
+                })
+
+
+
             }
             override fun onCancelled(databaseError: DatabaseError) {
                 // do nothing
