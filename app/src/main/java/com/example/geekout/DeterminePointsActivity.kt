@@ -65,12 +65,13 @@ class DeterminePointsActivity : AppCompatActivity(){
             startActivity(scoreboardIntent)
         }
 
+        gameContinueOrOver()
+
+
     }
 
     override fun onStart() {
         super.onStart()
-        gameContinueOrOver()
-
     }
 
     private fun addAnswersToList(numPlayers: Long, roundNum: Long) {
@@ -208,7 +209,7 @@ class DeterminePointsActivity : AppCompatActivity(){
     }
 
     private fun gameContinueOrOver() {
-        databaseCurrentGame.child("winner").addListenerForSingleValueEvent(object: ValueEventListener {
+        databaseCurrentGame.child("winner").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 if(p0.value == null) {
                     Log.i(TAG, "Game not yet over")
