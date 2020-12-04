@@ -138,17 +138,19 @@ class AnswerActivity : AppCompatActivity() {
                                         .child("answers").child("$pathNum")
                                         .setValue(answers[i])
                                 }
-                            }
-                            Toast.makeText(applicationContext, "Answers submitted!", Toast.LENGTH_LONG).show()
-                            databaseCurrentGame.child("round_$roundNum").child("answers_ready").setValue(true)
-                            //databaseCurrentGame.child("round_$roundNum").child("answers_reviewed").setValue(false)
 
-                            val waitReviewIntent = Intent(this@AnswerActivity, WaitReviewActivity::class.java)
-                            waitReviewIntent.putExtra("code", code)
-                            waitReviewIntent.putExtra("highest_bid", highestBid)
-                            //waitReviewIntent.putExtra("bidder_uid", uid)
-                            waitReviewIntent.putExtra("userAnswers", answers!!.toTypedArray())
-                            startActivity(waitReviewIntent)
+                                Toast.makeText(applicationContext, "Answers submitted!", Toast.LENGTH_LONG).show()
+                                databaseCurrentGame.child("round_$roundNum").child("answers_ready").setValue(true)
+                                //databaseCurrentGame.child("round_$roundNum").child("answers_reviewed").setValue(false)
+
+                                val waitReviewIntent = Intent(this@AnswerActivity, WaitReviewActivity::class.java)
+                                waitReviewIntent.putExtra("code", code)
+                                waitReviewIntent.putExtra("highest_bid", highestBid)
+                                //waitReviewIntent.putExtra("bidder_uid", uid)
+                                waitReviewIntent.putExtra("userAnswers", answers!!.toTypedArray())
+                                startActivity(waitReviewIntent)
+                            }
+
 
                         }
                         linearLayout.addView(submitButton)
