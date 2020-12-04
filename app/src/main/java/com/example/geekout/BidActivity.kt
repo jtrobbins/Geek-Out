@@ -111,6 +111,7 @@ class BidActivity : AppCompatActivity() {
                                     if (bid > currHighestBid) {
                                         databaseCurrentGame.child("round_$roundNum").child("highest_bid").setValue(bid)
                                         databaseCurrentGame.child("round_$roundNum").child("highest_bidder").setValue(playerNum)
+                                        databaseCurrentGame.child("round_$roundNum").child("highest_bidder_uid").setValue(uid)
                                     } else {
                                         Toast.makeText(applicationContext, "Enter a higher bid!", Toast.LENGTH_LONG).show()
                                     }
