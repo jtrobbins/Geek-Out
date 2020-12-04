@@ -139,45 +139,59 @@ class DeterminePointsActivity : AppCompatActivity(){
                         .child("username").addListenerForSingleValueEvent(object: ValueEventListener {
                             override fun onDataChange(p0: DataSnapshot) {
                               val username = p0.value as String
-                                if(mDisplayAnswers.size >= highestBid) {
-                                    databaseCurrentGame.child("players")
-                                        .child("$uid").child("points")
-                                        .setValue(currVal)
+                                databaseCurrentGame.child("round_$roundNum").child("updated_vals")
+                                    .addListenerForSingleValueEvent(object: ValueEventListener {
+                                        override fun onDataChange(p0: DataSnapshot) {
+                                            if(p0.value == null) {
+                                                databaseCurrentGame.child("round_$roundNum")
+                                                    .child("updated_vals").setValue(true)
+                                                if(mDisplayAnswers.size >= highestBid) {
+                                                    databaseCurrentGame.child("players")
+                                                        .child("$uid").child("points")
+                                                        .setValue(currVal)
 
-                                    databaseCurrentGame.child("winning_points")
-                                        .addValueEventListener(object: ValueEventListener {
+                                                    databaseCurrentGame.child("winning_points")
+                                                        .addValueEventListener(object: ValueEventListener {
 
-                                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                                val pointsToWin = dataSnapshot.value as Long
+                                                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                                                val pointsToWin = dataSnapshot.value as Long
 
-                                                if(currVal == pointsToWin) {
-                                                    databaseCurrentGame.child("winner").setValue(uid)
-                                                    Toast.makeText(applicationContext,
-                                                        "Game over! Click to continue", Toast.LENGTH_LONG)
-                                                        .show()
+                                                                if(currVal == pointsToWin) {
+                                                                    databaseCurrentGame.child("winner").setValue(uid)
+                                                                    Toast.makeText(applicationContext,
+                                                                        "Game over! Click to continue", Toast.LENGTH_LONG)
+                                                                        .show()
+                                                                }
+                                                                else {
+                                                                    val updatedRoundNum = roundNum+1
+                                                                    databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
+                                                                    Toast.makeText(applicationContext,
+                                                                        "$username won the bet! Click to continue", Toast.LENGTH_LONG)
+                                                                        .show()
+                                                                }
+
+                                                            }
+
+                                                            override fun onCancelled(databaseError: DatabaseError) {
+
+                                                            }
+                                                        })
                                                 }
                                                 else {
                                                     val updatedRoundNum = roundNum+1
                                                     databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
                                                     Toast.makeText(applicationContext,
-                                                        "$username won the bet! Click to continue", Toast.LENGTH_LONG)
+                                                        "$username did not win the bet! Click to continue", Toast.LENGTH_LONG)
                                                         .show()
                                                 }
-
                                             }
+                                        }
 
-                                            override fun onCancelled(databaseError: DatabaseError) {
+                                        override fun onCancelled(p0: DatabaseError) {
+                                            TODO("Not yet implemented")
+                                        }
+                                    })
 
-                                            }
-                                        })
-                                }
-                                else {
-                                    val updatedRoundNum = roundNum+1
-                                    databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
-                                    Toast.makeText(applicationContext,
-                                        "$username did not win the bet! Click to continue", Toast.LENGTH_LONG)
-                                        .show()
-                                }
                                 //gameContinueOrOver()
                             }
 

@@ -57,7 +57,6 @@ class WaitReviewActivity : AppCompatActivity() {
                                                 val intent = Intent(this@WaitReviewActivity,
                                                     DeterminePointsActivity::class.java)
                                                 intent.putExtra("code", code)
-                                                Log.i(TAG, "HIGHEST BID WRA: $highestBid")
                                                 intent.putExtra("highestBid", highestBid)
                                                 //intent.putExtra("bidder_uid", uid)
                                                 intent.putExtra("userAnswers", userAnswers)
