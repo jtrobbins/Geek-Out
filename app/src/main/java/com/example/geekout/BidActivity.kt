@@ -94,48 +94,49 @@ class BidActivity : AppCompatActivity() {
         }
 
         bidButton.setOnClickListener {
-            val bid = Integer.parseInt(bidEditText.text.toString())
+            if (bidEditText.text.toString() != "") {
 
-            databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
-                ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val roundNum = dataSnapshot.value.toString()
-                    databaseCurrentGame.child("round_$roundNum").child("highest_bid").addListenerForSingleValueEvent(object :
-                        ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val currHighestBid = dataSnapshot.getValue(Int::class.java) as Int
-                            databaseCurrentGame.child("players").child(uid).child("player_num").addListenerForSingleValueEvent(object :
-                                ValueEventListener {
-                                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                    val playerNum = dataSnapshot.getValue(Int::class.java) as Int
-                                    if (bid > currHighestBid) {
-                                        databaseCurrentGame.child("round_$roundNum").child("highest_bid").setValue(bid)
-                                        databaseCurrentGame.child("round_$roundNum").child("highest_bidder").setValue(playerNum)
-                                        databaseCurrentGame.child("round_$roundNum").child("highest_bidder_uid").setValue(uid)
-                                    } else {
-                                        Toast.makeText(applicationContext, "Enter a higher bid!", Toast.LENGTH_LONG).show()
+                val bid = Integer.parseInt(bidEditText.text.toString())
+
+                databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
+                    ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val roundNum = dataSnapshot.value.toString()
+                        databaseCurrentGame.child("round_$roundNum").child("highest_bid").addListenerForSingleValueEvent(object :
+                            ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                val currHighestBid = dataSnapshot.getValue(Int::class.java) as Int
+                                databaseCurrentGame.child("players").child(uid).child("player_num").addListenerForSingleValueEvent(object :
+                                    ValueEventListener {
+                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                        val playerNum = dataSnapshot.getValue(Int::class.java) as Int
+                                        if (bid > currHighestBid) {
+                                            databaseCurrentGame.child("round_$roundNum").child("highest_bid").setValue(bid)
+                                            databaseCurrentGame.child("round_$roundNum").child("highest_bidder").setValue(playerNum)
+                                            databaseCurrentGame.child("round_$roundNum").child("highest_bidder_uid").setValue(uid)
+                                        } else {
+                                            Toast.makeText(applicationContext, "Enter a higher bid!", Toast.LENGTH_LONG).show()
+                                        }
+                                        bidEditText.setText("")
                                     }
-                                    bidEditText.setText("")
-                                }
-                                override fun onCancelled(databaseError: DatabaseError) {
-                                    // do nothing
-                                }
-                            })
-                            if (bid > currHighestBid) {
-                                databaseCurrentGame.child("round_$roundNum").child("highest_bid").setValue(bid)
-                            } else {
-                                Toast.makeText(applicationContext, "Enter a higher bid!", Toast.LENGTH_LONG).show()
+                                    override fun onCancelled(databaseError: DatabaseError) {
+                                        // do nothing
+                                    }
+                                })
                             }
-                        }
-                        override fun onCancelled(databaseError: DatabaseError) {
-                            // do nothing
-                        }
-                    })
-                }
-                override fun onCancelled(databaseError: DatabaseError) {
-                    // do nothing
-                }
-            })
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                // do nothing
+                            }
+                        })
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // do nothing
+                    }
+                })
+            } else {
+                Toast.makeText(applicationContext, "Enter a bid!", Toast.LENGTH_LONG).show()
+            }
+
         }
 
         scoreboardButton.setOnClickListener {
@@ -298,7 +299,6 @@ class BidActivity : AppCompatActivity() {
     override fun onBackPressed() {
         // do nothing
     }
-
 
     companion object {
         private const val TAG = "GeekOut:BidActivity"
