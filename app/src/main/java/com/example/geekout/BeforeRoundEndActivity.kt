@@ -7,8 +7,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 
-class WaitReviewActivity : AppCompatActivity() {
-
+class BeforeRoundEndActivity: AppCompatActivity(){
     private lateinit var databaseGames: DatabaseReference
     private lateinit var databaseCurrentGame: DatabaseReference
     private lateinit var scoreboardButton: Button
@@ -32,7 +31,7 @@ class WaitReviewActivity : AppCompatActivity() {
         databaseCurrentGame = databaseGames.child(code)
 
         scoreboardButton.setOnClickListener {
-            val scoreboardIntent = Intent(this@WaitReviewActivity, ScoreboardActivity::class.java)
+            val scoreboardIntent = Intent(this@BeforeRoundEndActivity, ScoreboardActivity::class.java)
             scoreboardIntent.putExtra("code", code)
             startActivity(scoreboardIntent)
         }
@@ -46,7 +45,7 @@ class WaitReviewActivity : AppCompatActivity() {
                 override fun onDataChange(p0: DataSnapshot) {
                     val roundNum = p0.value as Long
                     databaseCurrentGame.child("round_$roundNum").child("answers_reviewed")
-                        .addValueEventListener(object :ValueEventListener {
+                        .addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 val usersReviewed = dataSnapshot.children
                                 databaseCurrentGame.child("num_players")
@@ -54,10 +53,9 @@ class WaitReviewActivity : AppCompatActivity() {
                                         override fun onDataChange(p0: DataSnapshot) {
                                             val num_players = p0.value as Long
                                             if(usersReviewed.count().toLong() == num_players-1) {
-                                                val intent = Intent(this@WaitReviewActivity,
+                                                val intent = Intent(this@BeforeRoundEndActivity,
                                                     DeterminePointsActivity::class.java)
                                                 intent.putExtra("code", code)
-                                                Log.i(TAG, "HIGHEST BID WRA: $highestBid")
                                                 intent.putExtra("highestBid", highestBid)
                                                 intent.putExtra("bidder_uid", uid)
                                                 intent.putExtra("userAnswers", userAnswers)
@@ -79,12 +77,12 @@ class WaitReviewActivity : AppCompatActivity() {
                 override fun onCancelled(p0: DatabaseError) {
                     TODO("Not yet implemented")
                 }
-        })
+            })
 
 
 
     }
     companion object {
-        private const val TAG = "GeekOut:WaitReviewActivity"
+        private const val TAG = "GeekOut:BeforeRoundEndActivity"
     }
 }

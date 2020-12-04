@@ -14,15 +14,17 @@
         android:layout_marginTop="56dp"
         android:text="Review Answers"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
+        android:typeface="normal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/answersView"
-        android:layout_width="297dp"
-        android:layout_height="471dp"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="116dp"
+        android:layout_width="277dp"
+        android:layout_height="414dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="120dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -32,8 +34,10 @@
         android:id="@+id/scoreboardButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="625dp"
+        android:layout_marginTop="576dp"
+        android:backgroundTint="#673AB7"
         android:text="@string/scoreboard"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,11 +45,11 @@
         android:id="@+id/submitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="159dp"
-        android:layout_marginTop="675dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="161dp"
+        android:layout_marginTop="645dp"
+        android:backgroundTint="#FF9800"
         android:text="Submit"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

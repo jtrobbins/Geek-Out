@@ -2,12 +2,12 @@ package com.example.geekout
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
-class ReviewAnswers : AppCompatActivity() {
+class ReviewAnswersActivity : AppCompatActivity() {
     private lateinit var databaseGames: DatabaseReference
     private lateinit var databaseCurrentGame: DatabaseReference
     private lateinit var scoreboardButton: Button
@@ -18,13 +18,15 @@ class ReviewAnswers : AppCompatActivity() {
     //private var roundNum = 1
     private var highestBid: Long = 0
     private lateinit var uid: String
+    private lateinit var currUid :String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.review_answers)
+        setContentView(R.layout.activity_review_answers)
 
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
-
+        currUid = FirebaseAuth.getInstance().currentUser!!.uid
 
         scoreboardButton = findViewById(R.id.scoreboardButton)
         submitButton = findViewById(R.id.submitButton)
@@ -38,10 +40,13 @@ class ReviewAnswers : AppCompatActivity() {
 
         mListView = findViewById<ListView>(R.id.answersView)
 
+
         databaseCurrentGame.child("round_num")
             .addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val roundNum = dataSnapshot.value as Long
+                    databaseCurrentGame.child("round_$roundNum")
+                        .child("answers_reviewed").child("$currUid").setValue(false)
                     addAnswersToList(roundNum, code)
                 }
 
@@ -54,7 +59,7 @@ class ReviewAnswers : AppCompatActivity() {
 
 
         scoreboardButton.setOnClickListener {
-            val scoreboardIntent = Intent(this@ReviewAnswers, ScoreboardActivity::class.java)
+            val scoreboardIntent = Intent(this@ReviewAnswersActivity, ScoreboardActivity::class.java)
             scoreboardIntent.putExtra("code", code)
             startActivity(scoreboardIntent)
         }
@@ -90,14 +95,14 @@ class ReviewAnswers : AppCompatActivity() {
         }
 
         submitButton.setOnClickListener{
-            val intent = Intent(this@ReviewAnswers, DeterminePoints::class.java)
+            val intent = Intent(this@ReviewAnswersActivity, BeforeRoundEndActivity::class.java)
             intent.putExtra("code", code)
             //intent.putExtra("roundNum", roundNum)
             intent.putExtra("highestBid", highestBid)
             intent.putExtra("userAnswers", mAnswers!!.toTypedArray())
             intent.putExtra("bidder_uid", uid)
             databaseCurrentGame.child("round_$round_Num")
-                .child("answers_reviewed").setValue(true)
+                .child("answers_reviewed").child("$currUid").setValue(true)
             startActivity(intent)
         }
     }

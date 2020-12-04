@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_bid.*
 
 class WaitAnswerActivity : AppCompatActivity() {
 
@@ -50,7 +49,7 @@ class WaitAnswerActivity : AppCompatActivity() {
                         .addListenerForSingleValueEvent(object :ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 if(dataSnapshot.value == true) {
-                                    val intent = Intent(this@WaitAnswerActivity, ReviewAnswers::class.java)
+                                    val intent = Intent(this@WaitAnswerActivity, ReviewAnswersActivity::class.java)
                                     intent.putExtra("code", code)
                                     intent.putExtra("highest_bid", highestBid)
                                     intent.putExtra("bidder_uid", uid)

@@ -141,7 +141,7 @@ class AnswerActivity : AppCompatActivity() {
                             }
                             Toast.makeText(applicationContext, "Answers submitted!", Toast.LENGTH_LONG).show()
                             databaseCurrentGame.child("round_$roundNum").child("answers_ready").setValue(true)
-                            databaseCurrentGame.child("round_$roundNum").child("answers_reviewed").setValue(false)
+                            //databaseCurrentGame.child("round_$roundNum").child("answers_reviewed").setValue(false)
 
                             val waitReviewIntent = Intent(this@AnswerActivity, WaitReviewActivity::class.java)
                             waitReviewIntent.putExtra("code", code)

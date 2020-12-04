@@ -35,9 +35,11 @@
         <activity android:name="AnswerActivity"/>
         <activity android:name="WaitReviewActivity"/>
         <activity android:name="ReviewActivity"/>
-        <activity android:name="ReviewAnswers"/>
-        <activity android:name="DeterminePoints"/>
-        <activity android:name="PlayerWon"/>
+        <activity android:name="ReviewAnswersActivity"/>
+        <activity android:name="DeterminePointsActivity"/>
+        <activity android:name="PlayerWonActivity"/>
+        <activity android:name="UpdatePointsActivity"/>
+        <activity android:name="BeforeRoundEndActivity"/>
     </application>
 
 </manifest>

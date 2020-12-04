@@ -7,10 +7,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.database.*
-import java.util.*
-import kotlin.concurrent.schedule
 
-class DeterminePoints : AppCompatActivity(){
+class DeterminePointsActivity : AppCompatActivity(){
 
     private lateinit var databaseGames: DatabaseReference
     private lateinit var databaseCurrentGame: DatabaseReference
@@ -25,7 +23,7 @@ class DeterminePoints : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.determine_points)
+        setContentView(R.layout.activity_determine_points)
 
         mListView = findViewById(R.id.updatedAnswersView)
         scoreboardButton = findViewById(R.id.scoreboardButton)
@@ -63,7 +61,7 @@ class DeterminePoints : AppCompatActivity(){
 
 
         scoreboardButton.setOnClickListener {
-            val scoreboardIntent = Intent(this@DeterminePoints, ScoreboardActivity::class.java)
+            val scoreboardIntent = Intent(this@DeterminePointsActivity, ScoreboardActivity::class.java)
             scoreboardIntent.putExtra("code", code)
             startActivity(scoreboardIntent)
         }
@@ -79,7 +77,7 @@ class DeterminePoints : AppCompatActivity(){
                 if(p0.value == null) {
                     Log.i(TAG, "Game not yet over")
                     mConstraintView.setOnClickListener {
-                        val intent = Intent(this@DeterminePoints, NewRoundActivity::class.java)
+                        val intent = Intent(this@DeterminePointsActivity, NewRoundActivity::class.java)
                         intent.putExtra("code", code)
                         startActivity(intent)
                     }
@@ -87,8 +85,9 @@ class DeterminePoints : AppCompatActivity(){
                 else {
                     mConstraintView.setOnClickListener {
                         Log.i(TAG, "Game over")
-                        val intent = Intent(this@DeterminePoints, PlayerWon::class.java)
+                        val intent = Intent(this@DeterminePointsActivity, PlayerWonActivity::class.java)
                         intent.putExtra("bidder_uid",uid)
+                        intent.putExtra("code", code)
                         startActivity(intent)
                     }
                 }
@@ -148,40 +147,55 @@ class DeterminePoints : AppCompatActivity(){
                     var currVal = dataSnapshot.value as Long
                     currVal++
 
-                    if(mDisplayAnswers.size >= highestBid) {
-                        databaseCurrentGame.child("players")
-                            .child("$uid").child("points")
-                            .setValue(currVal)
+                    databaseCurrentGame.child("players").child("$uid")
+                        .child("username").addListenerForSingleValueEvent(object: ValueEventListener {
+                            override fun onDataChange(p0: DataSnapshot) {
+                              val username = p0.value as String
+                                if(mDisplayAnswers.size >= highestBid) {
+                                    databaseCurrentGame.child("players")
+                                        .child("$uid").child("points")
+                                        .setValue(currVal)
 
-                        databaseCurrentGame.child("winning_points")
-                            .addValueEventListener(object: ValueEventListener {
+                                    databaseCurrentGame.child("winning_points")
+                                        .addValueEventListener(object: ValueEventListener {
 
-                                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                    val pointsToWin = dataSnapshot.value as Long
+                                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                                val pointsToWin = dataSnapshot.value as Long
 
-                                    if(pointsToWin == currVal) {
-                                        databaseCurrentGame.child("winner").setValue(uid)
-                                        Toast.makeText(applicationContext, "Game over! Click to continue", Toast.LENGTH_LONG)
-                                            .show()
-                                    }
-                                    else {
-                                        val updatedRoundNum = roundNum+1
-                                        databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
-                                        Toast.makeText(applicationContext, "$uid won the bet! Click to continue", Toast.LENGTH_LONG)
-                                            .show()
-                                    }
+                                                if(pointsToWin >= currVal) {
+                                                    databaseCurrentGame.child("winner").setValue(uid)
+                                                    Toast.makeText(applicationContext,
+                                                        "Game over! Click to continue", Toast.LENGTH_LONG)
+                                                        .show()
+                                                }
+                                                else {
+                                                    val updatedRoundNum = roundNum+1
+                                                    databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
+                                                    Toast.makeText(applicationContext,
+                                                        "$username won the bet! Click to continue", Toast.LENGTH_LONG)
+                                                        .show()
+                                                }
 
+                                            }
+
+                                            override fun onCancelled(databaseError: DatabaseError) {
+
+                                            }
+                                        })
                                 }
-
-                                override fun onCancelled(databaseError: DatabaseError) {
-
+                                else {
+                                    val updatedRoundNum = roundNum+1
+                                    databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
+                                    Toast.makeText(applicationContext,
+                                        "$username did not win the bet! Click to continue", Toast.LENGTH_LONG)
+                                        .show()
                                 }
-                            })
-                    }
-                    else {
-                        Toast.makeText(applicationContext, "$uid did not win the bet! Click to continue", Toast.LENGTH_LONG)
-                            .show()
-                    }
+                            }
+
+                            override fun onCancelled(p0: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+                        })
 
                 }
                 override fun onCancelled(databaseError: DatabaseError) {

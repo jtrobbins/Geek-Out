@@ -20,6 +20,7 @@ class StartGameActivity: AppCompatActivity() {
     private lateinit var codeTextView: TextView
     private lateinit var playersListView: ListView
     private lateinit var readyButton: Button
+    private lateinit var changePoints: Button
     internal lateinit var players: MutableList<Player>
     private lateinit var code: String
 
@@ -30,6 +31,7 @@ class StartGameActivity: AppCompatActivity() {
         codeTextView = findViewById(R.id.code)
         playersListView = findViewById(R.id.players)
         readyButton = findViewById(R.id.readyButton)
+        changePoints = findViewById(R.id.update_winning_points)
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
         databaseQuestions = FirebaseDatabase.getInstance().getReference("questions")
 
@@ -51,6 +53,12 @@ class StartGameActivity: AppCompatActivity() {
                     // do nothing
                 }
             })
+        }
+
+        changePoints.setOnClickListener {
+            val intent = Intent(this@StartGameActivity, UpdatePointsActivity::class.java)
+            intent.putExtra("code", code)
+            startActivity(intent)
         }
 
         players = ArrayList()
