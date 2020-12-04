@@ -45,8 +45,10 @@ class ReviewAnswersActivity : AppCompatActivity() {
             .addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val roundNum = dataSnapshot.value as Long
+                    /*
                     databaseCurrentGame.child("round_$roundNum")
                         .child("answers_reviewed").child("$currUid").setValue(false)
+                     */
                     addAnswersToList(roundNum, code)
                 }
 

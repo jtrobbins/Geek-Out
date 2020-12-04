@@ -42,7 +42,7 @@ class WaitReviewActivity : AppCompatActivity() {
         super.onStart()
 
         databaseCurrentGame.child("round_num")
-            .addValueEventListener(object: ValueEventListener {
+            .addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(p0: DataSnapshot) {
                     val roundNum = p0.value as Long
                     databaseCurrentGame.child("round_$roundNum").child("answers_reviewed")
