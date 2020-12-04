@@ -14,7 +14,7 @@ class LoginActivity : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
     private lateinit var userEmail: EditText
     private lateinit var userPassword: EditText
-    private lateinit var loginBtn: Button
+    private lateinit var loginButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +24,9 @@ class LoginActivity : AppCompatActivity() {
 
         userEmail = findViewById(R.id.email)
         userPassword = findViewById(R.id.password)
-        loginBtn = findViewById(R.id.login)
+        loginButton = findViewById(R.id.login)
 
-        loginBtn.setOnClickListener { loginUserAccount() }
+        loginButton.setOnClickListener { loginUserAccount() }
 
     }
 
@@ -35,11 +35,11 @@ class LoginActivity : AppCompatActivity() {
         val password: String = userPassword.text.toString()
 
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(applicationContext, "Please enter email...", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Please enter an email!", Toast.LENGTH_LONG).show()
             return
         }
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(applicationContext, "Please enter password!", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Please enter a password!", Toast.LENGTH_LONG).show()
             return
         }
 
@@ -52,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         applicationContext,
-                        "Login failed! Please try again later",
+                        "Login failed! Please try again later.",
                         Toast.LENGTH_LONG
                     ).show()
                 }
