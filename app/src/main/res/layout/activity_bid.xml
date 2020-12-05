@@ -91,18 +91,21 @@
         android:id="@+id/passButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
         android:text="@string/pass" />
 
     <Button
         android:id="@+id/bidButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
         android:text="@string/bid" />
 
     <Button
         android:id="@+id/scoreboardButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
         android:text="@string/scoreboard" />
 
 </LinearLayout>

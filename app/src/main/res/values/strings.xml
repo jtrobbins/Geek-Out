@@ -47,4 +47,11 @@
     <string name="rules">Rules</string>
     <string name="review_answers">Review Answers</string>
     <string name="test_answer">answer</string>
+    <string name="update">Update</string>
+    <string name="points">Points</string>
+    <string name="update_points_win">Updated Points Needed to Win:</string>
+    <string name="current_points_win">Current Points Needed to Win:</string>
+    <string name="textview">TextView</string>
+    <string name="instructions">Instructions</string>
+    <string name="geek_out_rules">GEEK-OUT RULES</string>
 </resources>

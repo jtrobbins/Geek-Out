@@ -38,6 +38,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/scoreboard"
+        android:backgroundTint="@color/colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/updatedAnswersView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

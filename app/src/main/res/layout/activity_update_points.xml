@@ -9,57 +9,59 @@
         android:id="@+id/curr_points_win_num"
         android:layout_width="91dp"
         android:layout_height="46dp"
-        android:layout_marginStart="156dp"
         android:layout_marginTop="108dp"
         android:textAlignment="center"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/upd_points_win"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
         android:layout_marginTop="184dp"
-        android:text="Updated Points Needed to Win:"
+        android:text="@string/update_points_win"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/curr_points_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="58dp"
         android:layout_marginTop="50dp"
-        android:text="Current Points Needed to Win:"
+        android:text="@string/current_points_win"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/update_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="158dp"
         android:layout_marginTop="326dp"
-        android:text="Update"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/update"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <EditText
         android:id="@+id/updated_points_win_num"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="103dp"
         android:layout_marginTop="239dp"
         android:textAlignment="center"
-        android:hint="Points"
+        android:hint="@string/points"
         android:ems="10"
         android:inputType="number"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
