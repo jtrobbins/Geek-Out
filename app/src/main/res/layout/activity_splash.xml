@@ -3,22 +3,26 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/splashLayout"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/polka_dot_background">
 
-    <ImageView
+    <ImageButton
         android:layout_height="300dp"
         android:layout_width="300dp"
         android:background="@drawable/circle"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:backgroundTint="@color/colorPrimary" />
 
-    <ImageView
+    <ImageButton
+        android:id="@+id/logo"
         android:layout_height="300dp"
         android:layout_width="300dp"
         android:background="@drawable/ic_geek_out_logo_2"
+        android:elevation="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

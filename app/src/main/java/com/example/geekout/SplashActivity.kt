@@ -2,6 +2,7 @@ package com.example.geekout
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 
@@ -11,8 +12,8 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        val splashLayout = findViewById<ConstraintLayout>(R.id.splashLayout)
-        splashLayout.setOnClickListener {
+        val splashButton = findViewById<ImageButton>(R.id.logo)
+        splashButton.setOnClickListener {
             val loginRegisterIntent = Intent(this, LoginRegistrationActivity::class.java)
             startActivity(loginRegisterIntent)
         }

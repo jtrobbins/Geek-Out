@@ -1,6 +1,7 @@
 package com.example.geekout
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -114,6 +115,7 @@ class AnswerActivity : AppCompatActivity() {
 
                         val submitButton = Button(this@AnswerActivity)
                         submitButton.setText(R.string.submit)
+                        submitButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.colorPrimary))
                         submitButton.setOnClickListener {
                             val answers = arrayListOf<String>()
                             var num = 0
@@ -157,6 +159,7 @@ class AnswerActivity : AppCompatActivity() {
 
                         val scoreboardButton = Button(this@AnswerActivity)
                         scoreboardButton.setText(R.string.scoreboard)
+                        scoreboardButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.colorPrimary))
                         scoreboardButton.setOnClickListener {
                             val scoreboardIntent = Intent(this@AnswerActivity, ScoreboardActivity::class.java)
                             scoreboardIntent.putExtra("code", code)

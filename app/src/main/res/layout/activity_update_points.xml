@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/polka_dot_background">
 
     <TextView
         android:id="@+id/curr_points_win_num"
@@ -46,6 +47,7 @@
         android:layout_marginTop="326dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:backgroundTint="@color/colorPrimary"
         android:text="@string/update"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
