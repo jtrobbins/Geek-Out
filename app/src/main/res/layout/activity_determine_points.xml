@@ -13,7 +13,7 @@
         android:layout_marginStart="147dp"
         android:layout_marginTop="76dp"
         android:layout_marginBottom="636dp"
-        android:text="Accepted Answers"
+        android:text="@string/accepted_answers"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -34,8 +34,10 @@
         android:id="@+id/scoreboardButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="625dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:text="@string/scoreboard"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/updatedAnswersView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.example.geekout
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -11,7 +12,7 @@ class PlayerWonActivity : AppCompatActivity() {
 
     private lateinit var databaseGames: DatabaseReference
     private lateinit var databaseCurrentGame: DatabaseReference
-    private lateinit var mConstraintView : ConstraintLayout
+    private lateinit var mLayoutView : LinearLayout
     private lateinit var mTextView :TextView
     private lateinit var code: String
     //private lateinit var uid: String
@@ -20,7 +21,7 @@ class PlayerWonActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_won)
 
-        mConstraintView = findViewById(R.id.pwLayout)
+        mLayoutView = findViewById(R.id.pwLayout)
         mTextView = findViewById(R.id.playerWon)
 
         code = intent.getStringExtra("code").toString()
@@ -35,7 +36,7 @@ class PlayerWonActivity : AppCompatActivity() {
                     .addListenerForSingleValueEvent(object: ValueEventListener {
                         override fun onDataChange(p0: DataSnapshot) {
                             val userName = p0.value as String
-                            mTextView.text = "$userName WON THE GAME!"
+                            mTextView.text = "$userName"
                         }
 
                         override fun onCancelled(p0: DatabaseError) {
@@ -52,7 +53,7 @@ class PlayerWonActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        mConstraintView.setOnClickListener {
+        mLayoutView.setOnClickListener {
             val intent = Intent(this@PlayerWonActivity, MainActivity::class.java)
             startActivity(intent)
         }

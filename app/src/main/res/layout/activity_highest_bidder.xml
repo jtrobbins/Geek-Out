@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:layout_gravity="center_horizontal"
-        android:text="Jeff"
+        android:text="@string/test_player"
         android:textSize="50sp"/>
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:layout_gravity="center_horizontal"
-        android:text="won the bid!"
+        android:text="@string/won_bid"
         android:textSize="50sp"/>
 
 </LinearLayout>
