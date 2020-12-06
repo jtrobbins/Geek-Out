@@ -18,6 +18,7 @@ class JoinGameActivity : AppCompatActivity() {
     private lateinit var joinButton: Button
     private lateinit var uid: String
     private lateinit var code: String
+    private var epValidator = EmailPasswordValidator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +35,11 @@ class JoinGameActivity : AppCompatActivity() {
 
         joinButton.setOnClickListener {
             code = codeEditTextView.text.toString()
-            checkGameExists()
+            if (!epValidator.validCode(code)) {
+                Toast.makeText(applicationContext, "Please enter a valid game code!", Toast.LENGTH_LONG).show()
+            } else {
+                checkGameExists()
+            }
         }
     }
 
@@ -45,7 +50,7 @@ class JoinGameActivity : AppCompatActivity() {
                 if (dataSnapshot.exists()) {
                     checkGameJoinable()
                 } else {
-                    Toast.makeText(this@JoinGameActivity, "Unable to join game. Invalid code.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@JoinGameActivity, "Unable to join game. Game does not exist.", Toast.LENGTH_LONG).show()
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {

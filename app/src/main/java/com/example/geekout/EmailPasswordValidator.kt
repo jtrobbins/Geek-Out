@@ -28,4 +28,14 @@ class EmailPasswordValidator {
 
         return passwordRegex.matches(password)
     }
+
+    fun validCode(code: String?) : Boolean {
+        if (code.isNullOrEmpty()) {
+            return false
+        }
+
+        val codeRegex = Regex("^[A-Z]{4}\$")
+
+        return codeRegex.matches(code)
+    }
 }
