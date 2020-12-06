@@ -209,8 +209,7 @@ class DeterminePointsActivity : AppCompatActivity(){
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     var currVal = dataSnapshot.value as Long
-                    currVal++
-
+                    //currVal++
                     databaseCurrentGame.child("players").child("$uid")
                         .child("username").addListenerForSingleValueEvent(object: ValueEventListener {
                             override fun onDataChange(p0: DataSnapshot) {
@@ -222,6 +221,7 @@ class DeterminePointsActivity : AppCompatActivity(){
                                                 databaseCurrentGame.child("round_$roundNum")
                                                     .child("updated_vals").setValue(true)
                                                 if(mDisplayAnswers.size >= highestBid) {
+                                                    currVal++
                                                     databaseCurrentGame.child("players")
                                                         .child("$uid").child("points")
                                                         .setValue(currVal)
@@ -262,6 +262,10 @@ class DeterminePointsActivity : AppCompatActivity(){
                                                     databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
 
                                                      */
+                                                    currVal -= 2
+                                                    databaseCurrentGame.child("players")
+                                                        .child("$uid").child("points")
+                                                        .setValue(currVal)
                                                     Toast.makeText(applicationContext,
                                                         "$username did not win the bet!", Toast.LENGTH_LONG)
                                                         .show()
