@@ -140,6 +140,9 @@ class DeterminePointsActivity : AppCompatActivity(){
             override fun onDataChange(p0: DataSnapshot) {
                 if(p0.value != null) {
                     val size = p0.value as Long
+                    if(size == 0L) {
+                        generateList(mDisplayAnswers, roundNum)
+                    }
                     for(i in 1 .. size) {
                         databaseCurrentGame.child("round_$roundNum").child("accepted_answers")
                             .child("$i").addListenerForSingleValueEvent(object :ValueEventListener {
@@ -205,11 +208,14 @@ class DeterminePointsActivity : AppCompatActivity(){
                             override fun onDataChange(p0: DataSnapshot) {
                               val username = p0.value as String
                                 databaseCurrentGame.child("round_$roundNum").child("updated_vals")
-                                    .addListenerForSingleValueEvent(object: ValueEventListener {
+                                    .addValueEventListener(object: ValueEventListener {
                                         override fun onDataChange(p0: DataSnapshot) {
+                                            Log.i(TAG, "MAYBE NOT NULL")
                                             if(p0.value == null) {
                                                 databaseCurrentGame.child("round_$roundNum")
                                                     .child("updated_vals").setValue(true)
+                                                val size = mDisplayAnswers.size
+                                                Log.i(TAG, "Size $size")
                                                 if(mDisplayAnswers.size >= highestBid) {
                                                     currVal++
                                                     databaseCurrentGame.child("players")
@@ -219,6 +225,7 @@ class DeterminePointsActivity : AppCompatActivity(){
                                                         .child("roundWon").setValue(true)
                                                 }
                                                 else {
+                                                    Log.i(TAG, "HITTING SUBTRACT CURRVAL")
                                                     currVal -= 2
                                                     databaseCurrentGame.child("players")
                                                         .child("$uid").child("points")

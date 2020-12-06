@@ -117,7 +117,6 @@ class ReviewAnswersActivity : AppCompatActivity() {
                                                 val num_players = p0.value as Long
                                                 lateinit var intent: Intent
                                                 if(usersReviewed.count().toLong() == num_players-2) {
-                                                    Log.i(TAG, "SETTING ACCEPTED ANSWERS")
                                                     setAcceptedAnswers(roundNum, num_players)
                                                     intent = Intent(this@ReviewAnswersActivity, DeterminePointsActivity::class.java)
                                                 }
