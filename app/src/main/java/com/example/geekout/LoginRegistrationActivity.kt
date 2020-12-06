@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
+// reference: Lab7 - Firebase
+
 class LoginRegistrationActivity : AppCompatActivity() {
 
     private lateinit var loginButton: Button

@@ -1,5 +1,7 @@
 package com.example.geekout
 
+// reference: Lab7 - Firebase
+
 class EmailPasswordValidator {
 
     fun validEmail(email: String?) : Boolean {

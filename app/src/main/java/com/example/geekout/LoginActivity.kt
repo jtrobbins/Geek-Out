@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
+// reference: Lab7 - Firebase
+
 class LoginActivity : AppCompatActivity() {
 
     private var mAuth: FirebaseAuth? = null
