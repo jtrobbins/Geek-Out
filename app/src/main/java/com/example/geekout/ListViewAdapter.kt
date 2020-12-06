@@ -102,8 +102,6 @@ internal class ListViewAdapter(context: Context, resource: Int, private val roun
         return newView
     }
 
-    // The ViewHolder class. See:
-    // http://developer.android.com/training/improving-layouts/smooth-scrolling.html#ViewHolder
     internal class ViewHolder {
         lateinit var checkBoxView: CheckBox
     }

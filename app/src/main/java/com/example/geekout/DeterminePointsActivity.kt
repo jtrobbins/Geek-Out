@@ -33,7 +33,6 @@ class DeterminePointsActivity : AppCompatActivity(){
 
         code = intent.getStringExtra("code").toString()
         highestBid = intent.getLongExtra("highestBid", 1)
-        //uid = intent.getStringExtra("bidder_uid").toString()
         updatedAnswers = intent.getStringArrayExtra("userAnswers")!! as Array<String>
 
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
@@ -47,7 +46,6 @@ class DeterminePointsActivity : AppCompatActivity(){
                         .addListenerForSingleValueEvent(object: ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 val roundNum = dataSnapshot.value as Long
-                                Log.i(TAG, "About to call AATL")
                                 addAnswersToList(numPlayers, roundNum)
                             }
 
@@ -101,18 +99,13 @@ class DeterminePointsActivity : AppCompatActivity(){
                                             val updatedRoundNum = roundNum+1
                                             databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
                                             if(p0.value == null) {
-                                                Log.i(TAG, "Game not yet over")
-
                                                 val intent = Intent(this@DeterminePointsActivity, NewRoundActivity::class.java)
                                                 intent.putExtra("code", code)
                                                 startActivity(intent)
 
                                             }
                                             else {
-
-                                                Log.i(TAG, "Game over")
                                                 val intent = Intent(this@DeterminePointsActivity, PlayerWonActivity::class.java)
-                                                //intent.putExtra("bidder_uid",uid)
                                                 intent.putExtra("code", code)
                                                 startActivity(intent)
 
@@ -176,7 +169,6 @@ class DeterminePointsActivity : AppCompatActivity(){
     }
 
     private fun generateList(mDisplayAnswers: ArrayList<String>, roundNum: Long) {
-        Log.i(TAG, "Round Num: $roundNum Generating list")
         mListView.adapter = DeterminePointsAdapter(this,
             R.layout.updated_list_item, mDisplayAnswers)
         mListView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
@@ -187,7 +179,6 @@ class DeterminePointsActivity : AppCompatActivity(){
             .addListenerForSingleValueEvent(object:ValueEventListener {
                 override fun onDataChange(p0: DataSnapshot) {
                     if(p0.value == null) {
-                        Log.i(TAG, "ROUND NUM: $roundNum")
                     }
                     else {
                         val highest_uid = p0.value as String
@@ -203,7 +194,6 @@ class DeterminePointsActivity : AppCompatActivity(){
     }
 
     private fun updatePoints(mDisplayAnswers: ArrayList<String>, roundNum: Long, uid: String) {
-        Log.i(TAG, "Round Num: $roundNum Updating list")
         databaseCurrentGame.child("players").child("$uid")
             .child("points")
             .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -225,52 +215,59 @@ class DeterminePointsActivity : AppCompatActivity(){
                                                     databaseCurrentGame.child("players")
                                                         .child("$uid").child("points")
                                                         .setValue(currVal)
-
-                                                    databaseCurrentGame.child("winning_points")
-                                                        .addValueEventListener(object: ValueEventListener {
-
-                                                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                                                val pointsToWin = dataSnapshot.value as Long
-
-                                                                if(currVal == pointsToWin) {
-                                                                    databaseCurrentGame.child("winner").setValue(uid)
-                                                                    Toast.makeText(applicationContext,
-                                                                        "Game over!", Toast.LENGTH_LONG)
-                                                                        .show()
-                                                                }
-                                                                else {
-                                                                    /*
-                                                                    val updatedRoundNum = roundNum+1
-                                                                    databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
-
-                                                                     */
-                                                                    Toast.makeText(applicationContext,
-                                                                        "$username won the bet!", Toast.LENGTH_LONG)
-                                                                        .show()
-                                                                }
-
-                                                            }
-
-                                                            override fun onCancelled(databaseError: DatabaseError) {
-
-                                                            }
-                                                        })
+                                                    databaseCurrentGame.child("round_$roundNum")
+                                                        .child("roundWon").setValue(true)
                                                 }
                                                 else {
-                                                    /*
-                                                    val updatedRoundNum = roundNum+1
-                                                    databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
-
-                                                     */
                                                     currVal -= 2
                                                     databaseCurrentGame.child("players")
                                                         .child("$uid").child("points")
                                                         .setValue(currVal)
-                                                    Toast.makeText(applicationContext,
-                                                        "$username did not win the bet!", Toast.LENGTH_LONG)
-                                                        .show()
+                                                    databaseCurrentGame.child("round_$roundNum")
+                                                        .child("roundWon").setValue(false)
                                                 }
                                             }
+                                            databaseCurrentGame.child("winning_points")
+                                                .addValueEventListener(object: ValueEventListener {
+                                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                                        val pointsToWin = dataSnapshot.value as Long
+
+                                                        if(currVal == pointsToWin) {
+                                                            databaseCurrentGame.child("winner").setValue(uid)
+                                                            Toast.makeText(applicationContext,
+                                                                "$username won the game!", Toast.LENGTH_LONG)
+                                                                .show()
+                                                        }
+                                                        else {
+                                                            databaseCurrentGame.child("round_$roundNum").child("roundWon")
+                                                                .addListenerForSingleValueEvent(object: ValueEventListener {
+                                                                    override fun onDataChange(p0: DataSnapshot) {
+                                                                       val won = p0.value as Boolean
+                                                                        if(won) {
+                                                                            Toast.makeText(applicationContext,
+                                                                                "$username won the bet!", Toast.LENGTH_LONG)
+                                                                                .show()
+                                                                        }
+                                                                        else {
+                                                                            Toast.makeText(applicationContext,
+                                                                                "$username did not win the bet!", Toast.LENGTH_LONG)
+                                                                                .show()
+                                                                        }
+                                                                    }
+
+                                                                    override fun onCancelled(p0: DatabaseError) {
+                                                                        TODO("Not yet implemented")
+                                                                    }
+                                                                })
+
+                                                        }
+
+                                                    }
+
+                                                    override fun onCancelled(databaseError: DatabaseError) {
+
+                                                    }
+                                                })
                                         }
 
                                         override fun onCancelled(p0: DatabaseError) {
@@ -289,35 +286,6 @@ class DeterminePointsActivity : AppCompatActivity(){
 
                 }
             })
-    }
-
-
-    private fun gameContinueOrOver() {
-        databaseCurrentGame.child("winner").addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                if(p0.value == null) {
-                    Log.i(TAG, "Game not yet over")
-
-                        val intent = Intent(this@DeterminePointsActivity, NewRoundActivity::class.java)
-                        intent.putExtra("code", code)
-                        startActivity(intent)
-
-                }
-                else {
-
-                        Log.i(TAG, "Game over")
-                        val intent = Intent(this@DeterminePointsActivity, PlayerWonActivity::class.java)
-                        //intent.putExtra("bidder_uid",uid)
-                        intent.putExtra("code", code)
-                        startActivity(intent)
-
-                }
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
     }
 
     override fun onBackPressed() {
