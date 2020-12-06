@@ -78,9 +78,6 @@ class BeforeRoundEndActivity: AppCompatActivity(){
                     TODO("Not yet implemented")
                 }
             })
-
-
-
     }
 
     override fun onBackPressed() {

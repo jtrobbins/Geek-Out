@@ -265,6 +265,7 @@ class BidActivity : AppCompatActivity() {
                                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                                             val highestBid = dataSnapshot.value as Long
                                             if (passNum == numPlayers - 1) {
+                                                Log.i(TAG, "Starting highest bid")
                                                 val highestBidderIntent = Intent(this@BidActivity, HighestBidderActivity::class.java)
                                                 highestBidderIntent.putExtra("code", code)
                                                 highestBidderIntent.putExtra("highest_bid", highestBid)
