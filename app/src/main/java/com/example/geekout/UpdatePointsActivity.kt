@@ -1,5 +1,6 @@
 package com.example.geekout
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -17,7 +18,9 @@ class UpdatePointsActivity : AppCompatActivity() {
     private lateinit var mUpdtPoints: EditText
     private lateinit var mTextUpdtPoints: TextView
     private lateinit var updateButton: Button
+    private lateinit var returnButton: Button
     private lateinit var code: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +31,7 @@ class UpdatePointsActivity : AppCompatActivity() {
         mUpdtPoints = findViewById(R.id.updated_points_win_num)
         mTextUpdtPoints = findViewById(R.id.upd_points_win)
         updateButton = findViewById(R.id.update_button)
+        returnButton = findViewById(R.id.update_return)
 
         code = intent.getStringExtra("code").toString()
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
@@ -47,10 +51,24 @@ class UpdatePointsActivity : AppCompatActivity() {
 
         updateButton.setOnClickListener {
             val newPoints = mUpdtPoints.text.toString().toLong()
-            databaseCurrentGame.child("winning_points").setValue(newPoints)
-            Toast.makeText(applicationContext,
-                "Number of points needed to win has been updated!", Toast.LENGTH_LONG)
-                .show()
+            if(newPoints <= 0L) {
+                Toast.makeText(applicationContext,
+                    "Number of points cannot be 0!", Toast.LENGTH_LONG)
+                    .show()
+            }
+            else {
+                databaseCurrentGame.child("winning_points").setValue(newPoints)
+                Toast.makeText(applicationContext,
+                    "Number of points needed to win has been updated!", Toast.LENGTH_LONG)
+                    .show()
+            }
+            mUpdtPoints.setText("")
+        }
+
+        returnButton.setOnClickListener {
+            val intent = Intent(this@UpdatePointsActivity, StartGameActivity::class.java)
+            intent.putExtra("code", code)
+            startActivity(intent)
         }
     }
 

@@ -110,7 +110,10 @@ class BidActivity : AppCompatActivity() {
                                     ValueEventListener {
                                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                                         val playerNum = dataSnapshot.getValue(Int::class.java) as Int
-                                        if (bid > currHighestBid) {
+                                        if(bid > 10) {
+                                            Toast.makeText(applicationContext, "Enter a lower bid!", Toast.LENGTH_LONG).show()
+                                        }
+                                        else if (bid > currHighestBid) {
                                             databaseCurrentGame.child("round_$roundNum").child("highest_bid").setValue(bid)
                                             databaseCurrentGame.child("round_$roundNum").child("highest_bidder").setValue(playerNum)
                                             databaseCurrentGame.child("round_$roundNum").child("highest_bidder_uid").setValue(uid)

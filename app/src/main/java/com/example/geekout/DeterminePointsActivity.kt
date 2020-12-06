@@ -273,8 +273,6 @@ class DeterminePointsActivity : AppCompatActivity(){
                                             TODO("Not yet implemented")
                                         }
                                     })
-
-                                //gameContinueOrOver()
                             }
 
                             override fun onCancelled(p0: DatabaseError) {

@@ -25,7 +25,7 @@
         android:layout_width="307dp"
         android:layout_height="480dp"
         android:layout_marginStart="52dp"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="96dp"
         android:text="@string/instructions"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
