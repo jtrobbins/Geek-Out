@@ -2,6 +2,7 @@ package com.example.geekout
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -88,6 +89,11 @@ class ReviewAnswersActivity : AppCompatActivity() {
     }
 
     private fun generateList(userAnswers: MutableList<String>, round_Num: Long, gameCode: String) {
+        for(i in 0 until userAnswers.size) {
+            val currAnswer = userAnswers[i]
+            databaseCurrentGame.child("round_$round_Num").child("answers_contested")
+                .child("$currAnswer").child("Contested").setValue(0)
+        }
         mAnswers = userAnswers
         mListView.adapter = ListViewAdapter(this, R.layout.list_item, round_Num, gameCode,
             mAnswers!!.toTypedArray())
@@ -97,16 +103,107 @@ class ReviewAnswersActivity : AppCompatActivity() {
         }
 
         submitButton.setOnClickListener{
-            val intent = Intent(this@ReviewAnswersActivity, BeforeRoundEndActivity::class.java)
-            intent.putExtra("code", code)
-            //intent.putExtra("roundNum", roundNum)
-            intent.putExtra("highestBid", highestBid)
-            intent.putExtra("userAnswers", mAnswers!!.toTypedArray())
-            //intent.putExtra("bidder_uid", uid)
-            databaseCurrentGame.child("round_$round_Num")
-                .child("answers_reviewed").child("$currUid").setValue(true)
-            startActivity(intent)
+            databaseCurrentGame.child("round_num")
+                .addListenerForSingleValueEvent(object: ValueEventListener {
+                    override fun onDataChange(p0: DataSnapshot) {
+                        val roundNum = p0.value as Long
+                        databaseCurrentGame.child("round_$roundNum").child("answers_reviewed")
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    val usersReviewed = dataSnapshot.children
+                                    databaseCurrentGame.child("num_players")
+                                        .addListenerForSingleValueEvent(object: ValueEventListener {
+                                            override fun onDataChange(p0: DataSnapshot) {
+                                                val num_players = p0.value as Long
+                                                lateinit var intent: Intent
+                                                if(usersReviewed.count().toLong() == num_players-2) {
+                                                    Log.i(TAG, "SETTING ACCEPTED ANSWERS")
+                                                    setAcceptedAnswers(roundNum, num_players)
+                                                    intent = Intent(this@ReviewAnswersActivity, DeterminePointsActivity::class.java)
+                                                }
+                                                else {
+                                                    intent = Intent(this@ReviewAnswersActivity, BeforeRoundEndActivity::class.java)
+                                                }
+                                                databaseCurrentGame.child("round_$roundNum").child("round_over")
+                                                    .setValue(false)
+                                                databaseCurrentGame.child("round_$round_Num")
+                                                    .child("answers_reviewed").child("$currUid").setValue(true)
+
+                                                intent.putExtra("code", code)
+                                                intent.putExtra("highestBid", highestBid)
+                                                intent.putExtra("userAnswers", mAnswers!!.toTypedArray())
+                                                startActivity(intent)
+
+
+
+                                            }
+
+                                            override fun onCancelled(p0: DatabaseError) {
+                                                TODO("Not yet implemented")
+                                            }
+                                        })
+                                }
+                                override fun onCancelled(databaseError: DatabaseError) {
+
+                                }
+                            })
+                    }
+
+                    override fun onCancelled(p0: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
         }
+    }
+
+    private fun setAcceptedAnswers(roundNum: Long, numPlayers: Long) {
+        var mDisplayAnswers = arrayListOf<String>()
+        for(x in 1 .. highestBid) {
+            databaseCurrentGame.child("round_$roundNum").child("answers").child("$x")
+                .addValueEventListener(object: ValueEventListener {
+                    override fun onDataChange(p0: DataSnapshot) {
+                        Log.i(TAG, "ANSWER NUMBER: $x")
+                        val currAnswer = p0.value as String
+
+                        databaseCurrentGame.child("round_$roundNum").child("answers_contested")
+                            .child("$currAnswer").child("Contested")
+                            .addListenerForSingleValueEvent(object: ValueEventListener {
+                                override fun onDataChange(p0: DataSnapshot) {
+
+                                    val contestVal = p0.value as Long
+                                    if(contestVal == 0L || contestVal < ((numPlayers-1)/2)) {
+                                        mDisplayAnswers!!.add(currAnswer)
+                                    }
+
+                                    if(x == highestBid) {
+                                        for (i in 0 until mDisplayAnswers.size) {
+                                            val pathNum = i + 1
+                                            databaseCurrentGame.child("round_$roundNum")
+                                                .child("accepted_answers").child("$pathNum")
+                                                .setValue(mDisplayAnswers[i])
+                                        }
+
+                                        databaseCurrentGame.child("round_$roundNum")
+                                            .child("accepted_answers_size").setValue(mDisplayAnswers.size)
+                                    }
+
+                                }
+
+                                override fun onCancelled(p0: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+                            })
+
+
+                    }
+
+                    override fun onCancelled(p0: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        }
+
     }
 
     override fun onBackPressed() {

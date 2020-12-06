@@ -15,7 +15,7 @@ class DeterminePointsActivity : AppCompatActivity(){
     private lateinit var databaseGames: DatabaseReference
     private lateinit var databaseCurrentGame: DatabaseReference
     private lateinit var updatedAnswers: Array<String>
-    private var mDisplayAnswers:MutableList<String>? = mutableListOf()
+    //private var mDisplayAnswers:MutableList<String>? = mutableListOf()
     private lateinit var scoreboardButton: Button
     private lateinit var code: String
     private lateinit var mListView: ListView
@@ -47,6 +47,7 @@ class DeterminePointsActivity : AppCompatActivity(){
                         .addListenerForSingleValueEvent(object: ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 val roundNum = dataSnapshot.value as Long
+                                Log.i(TAG, "About to call AATL")
                                 addAnswersToList(numPlayers, roundNum)
                             }
 
@@ -67,43 +68,114 @@ class DeterminePointsActivity : AppCompatActivity(){
             startActivity(scoreboardIntent)
         }
 
-        gameContinueOrOver()
+        mConstraintView.setOnClickListener {
+            databaseCurrentGame.child("round_num")
+                .addListenerForSingleValueEvent(object: ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val roundNum = dataSnapshot.value as Long
+                        databaseCurrentGame.child("round_$roundNum").child("round_over").setValue(true)
 
+                    }
+
+                    override fun onCancelled(dataSnapshot: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
+        }
 
     }
 
     override fun onStart() {
         super.onStart()
+        databaseCurrentGame.child("round_num")
+            .addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val roundNum = dataSnapshot.value as Long
+                    databaseCurrentGame.child("round_$roundNum")
+                        .child("round_over").addValueEventListener(object: ValueEventListener {
+                            override fun onDataChange(p0: DataSnapshot) {
+                                val over = p0.value as Boolean
+                                if(over) {
+                                    databaseCurrentGame.child("winner").addValueEventListener(object: ValueEventListener {
+                                        override fun onDataChange(p0: DataSnapshot) {
+                                            val updatedRoundNum = roundNum+1
+                                            databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
+                                            if(p0.value == null) {
+                                                Log.i(TAG, "Game not yet over")
+
+                                                val intent = Intent(this@DeterminePointsActivity, NewRoundActivity::class.java)
+                                                intent.putExtra("code", code)
+                                                startActivity(intent)
+
+                                            }
+                                            else {
+
+                                                Log.i(TAG, "Game over")
+                                                val intent = Intent(this@DeterminePointsActivity, PlayerWonActivity::class.java)
+                                                //intent.putExtra("bidder_uid",uid)
+                                                intent.putExtra("code", code)
+                                                startActivity(intent)
+
+                                            }
+                                        }
+
+                                        override fun onCancelled(p0: DatabaseError) {
+                                            TODO("Not yet implemented")
+                                        }
+                                    })
+                                }
+
+                            }
+
+                            override fun onCancelled(p0: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+                        })
+
+                }
+
+                override fun onCancelled(dataSnapshot: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
     }
 
     private fun addAnswersToList(numPlayers: Long, roundNum: Long) {
-        for(a in updatedAnswers) {
-            databaseCurrentGame.child("round_$roundNum").child("answers")
-                .child("$a").child("Contested").addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        if(dataSnapshot.value != null) {
-                            val contestVal = dataSnapshot.value as Long
-                            if(contestVal < (numPlayers-1)/2) {
-                                //databaseCurrentGame.child("accepted_answers").child(a)
-                                mDisplayAnswers!!.add(a)
-                            }
-                        }
-                        else {
-                            mDisplayAnswers!!.add(a)
-                        }
+        var mDisplayAnswers = arrayListOf<String>()
+        databaseCurrentGame.child("round_$roundNum").child("accepted_answers_size")
+            .addValueEventListener(object:ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                if(p0.value != null) {
+                    val size = p0.value as Long
+                    for(i in 1 .. size) {
+                        databaseCurrentGame.child("round_$roundNum").child("accepted_answers")
+                            .child("$i").addListenerForSingleValueEvent(object :ValueEventListener {
+                                override fun onDataChange(p0: DataSnapshot) {
+                                    val answer = p0.value as String
+                                    mDisplayAnswers!!.add(answer)
 
-                        if(a == updatedAnswers.get(updatedAnswers.size-1)) {
-                            generateList(mDisplayAnswers!!.toTypedArray(), roundNum)
-                        }
-                    }
-                    override fun onCancelled(databaseError: DatabaseError) {
+                                    if(i == size) {
+                                        Log.i(TAG, "ANSWERS SIZE $size")
+                                        generateList(mDisplayAnswers, roundNum)
+                                    }
+                                }
 
+                                override fun onCancelled(p0: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+                            })
                     }
-                })
-        }
+                }
+
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
-    private fun generateList(mDisplayAnswers: Array<String>, roundNum: Long) {
+    private fun generateList(mDisplayAnswers: ArrayList<String>, roundNum: Long) {
         Log.i(TAG, "Round Num: $roundNum Generating list")
         mListView.adapter = DeterminePointsAdapter(this,
             R.layout.updated_list_item, mDisplayAnswers)
@@ -130,7 +202,7 @@ class DeterminePointsActivity : AppCompatActivity(){
             })
     }
 
-    private fun updatePoints(mDisplayAnswers: Array<String>, roundNum: Long, uid: String) {
+    private fun updatePoints(mDisplayAnswers: ArrayList<String>, roundNum: Long, uid: String) {
         Log.i(TAG, "Round Num: $roundNum Updating list")
         databaseCurrentGame.child("players").child("$uid")
             .child("points")
@@ -167,8 +239,11 @@ class DeterminePointsActivity : AppCompatActivity(){
                                                                         .show()
                                                                 }
                                                                 else {
+                                                                    /*
                                                                     val updatedRoundNum = roundNum+1
                                                                     databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
+
+                                                                     */
                                                                     Toast.makeText(applicationContext,
                                                                         "$username won the bet!", Toast.LENGTH_LONG)
                                                                         .show()
@@ -182,8 +257,11 @@ class DeterminePointsActivity : AppCompatActivity(){
                                                         })
                                                 }
                                                 else {
+                                                    /*
                                                     val updatedRoundNum = roundNum+1
                                                     databaseCurrentGame.child("round_num").setValue(updatedRoundNum)
+
+                                                     */
                                                     Toast.makeText(applicationContext,
                                                         "$username did not win the bet!", Toast.LENGTH_LONG)
                                                         .show()
@@ -211,25 +289,26 @@ class DeterminePointsActivity : AppCompatActivity(){
             })
     }
 
+
     private fun gameContinueOrOver() {
         databaseCurrentGame.child("winner").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 if(p0.value == null) {
                     Log.i(TAG, "Game not yet over")
-                    Timer().schedule(3000) {
+
                         val intent = Intent(this@DeterminePointsActivity, NewRoundActivity::class.java)
                         intent.putExtra("code", code)
                         startActivity(intent)
-                    }
+
                 }
                 else {
-                    Timer().schedule(3000){
+
                         Log.i(TAG, "Game over")
                         val intent = Intent(this@DeterminePointsActivity, PlayerWonActivity::class.java)
                         //intent.putExtra("bidder_uid",uid)
                         intent.putExtra("code", code)
                         startActivity(intent)
-                    }
+
                 }
             }
 

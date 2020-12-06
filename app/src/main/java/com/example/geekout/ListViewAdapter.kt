@@ -57,19 +57,19 @@ internal class ListViewAdapter(context: Context, resource: Int, private val roun
         answerCheckBox.setOnCheckedChangeListener { compoundButton, b ->
             if(answerCheckBox.isChecked) {
                 Log.i(TAG, "Checkbox was checked ")
-                databaseCurrentGame.child("round_$roundNum").child("answers")
+                databaseCurrentGame.child("round_$roundNum").child("answers_contested")
                     .child("$txt").child("Contested")
                     .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             if(dataSnapshot.value == null) {
-                                databaseCurrentGame.child("round_$roundNum").child("answers")
+                                databaseCurrentGame.child("round_$roundNum").child("answers_contested")
                                     .child("$txt").child("Contested")
                                     .setValue(1)
                             }
                             else{
                                 var currVal = dataSnapshot.value as Long
                                 currVal++
-                                databaseCurrentGame.child("round_$roundNum").child("answers")
+                                databaseCurrentGame.child("round_$roundNum").child("answers_contested")
                                     .child("$txt").child("Contested")
                                     .setValue(currVal)
                             }
@@ -80,13 +80,13 @@ internal class ListViewAdapter(context: Context, resource: Int, private val roun
                     })
             }
             else if (!answerCheckBox.isChecked){
-                databaseCurrentGame.child("round_$roundNum").child("answers")
+                databaseCurrentGame.child("round_$roundNum").child("answers_contested")
                     .child("$txt").child("Contested")
                     .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             var currVal = dataSnapshot.value as Long
                             currVal--
-                            databaseCurrentGame.child("round_$roundNum").child("answers")
+                            databaseCurrentGame.child("round_$roundNum").child("answers_contested")
                                 .child("$txt").child("Contested")
                                 .setValue(currVal)
 

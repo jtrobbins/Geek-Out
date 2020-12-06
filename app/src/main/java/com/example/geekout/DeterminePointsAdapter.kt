@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-class DeterminePointsAdapter(context: Context, resource: Int, objects: Array<String>) :
+class DeterminePointsAdapter(context: Context, resource: Int, objects: ArrayList<String>) :
     ArrayAdapter<String>(context, resource, objects) {
 
     private var mLayoutInflater: LayoutInflater = LayoutInflater.from(context)
