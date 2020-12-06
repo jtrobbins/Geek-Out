@@ -16,8 +16,8 @@ class DialogFragmentMainActivity : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(activity)
-            .setTitle("Lorem Ipsum")
-            .setMessage("Lorem Ipsum.")
+            .setTitle("Welcome to Geek-Out!")
+            .setMessage("Here you can determine once and for all which player is the most knowledgeable about your favorite pop culture subjects!")
             .create()
     }
 }

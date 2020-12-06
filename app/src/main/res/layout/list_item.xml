@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/test_answer"
         android:layout_marginLeft="32dp"
+        android:layout_marginTop="52dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
