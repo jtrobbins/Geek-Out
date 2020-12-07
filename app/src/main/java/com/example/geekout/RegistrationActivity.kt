@@ -63,9 +63,9 @@ class RegistrationActivity : AppCompatActivity() {
         }
 
         // Registers using Firebase
-        val x = mAuth!!.createUserWithEmailAndPassword(email, password)
+        val register = mAuth!!.createUserWithEmailAndPassword(email, password)
 
-        x.addOnCompleteListener { task ->
+        register .addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 addUser(username)
                 Toast.makeText(applicationContext, getString(R.string.register_success), Toast.LENGTH_LONG).show()

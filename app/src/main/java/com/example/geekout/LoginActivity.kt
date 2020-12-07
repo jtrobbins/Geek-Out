@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
 // reference: Lab7 - Firebase
-// Login using Firbase Authentication
+// Login using Firebase Authentication
 
 class LoginActivity : AppCompatActivity() {
 
@@ -58,7 +58,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         applicationContext,
-                        "Login failed! Please try again later.",
+                        "Login has failed! Please try again!",
                         Toast.LENGTH_LONG
                     ).show()
                 }

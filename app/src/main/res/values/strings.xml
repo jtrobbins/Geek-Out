@@ -10,7 +10,7 @@
     <string name="register">Register</string>
     <string name="register_new_account">Register new account</string>
     <string name="register_success">Registration successful!</string>
-    <string name="register_failed">Registration failed! Please try again later</string>
+    <string name="register_failed">Registration has failed! Please try again!</string>
     <string name="email_hint">Email</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
