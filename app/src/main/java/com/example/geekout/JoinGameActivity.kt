@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
+// Activity for joining a game
+
 class JoinGameActivity : AppCompatActivity() {
 
     private var mAuth: FirebaseAuth? = null
@@ -35,6 +37,7 @@ class JoinGameActivity : AppCompatActivity() {
 
         joinButton.setOnClickListener {
             code = codeEditTextView.text.toString()
+            // Validate code could possibly be valid
             if (!epValidator.validCode(code)) {
                 Toast.makeText(applicationContext, "Please enter a valid game code!", Toast.LENGTH_LONG).show()
             } else {
@@ -43,6 +46,7 @@ class JoinGameActivity : AppCompatActivity() {
         }
     }
 
+    // Check to see if the game exists
     private fun checkGameExists() {
         databaseGames.child(code).addListenerForSingleValueEvent(object :
             ValueEventListener {
@@ -59,6 +63,7 @@ class JoinGameActivity : AppCompatActivity() {
         })
     }
 
+    // Checks to see if the game is in progress. If not, the game is joinable
     private fun checkGameJoinable() {
         databaseGames.child(code).child("in_progress").addListenerForSingleValueEvent(object :
             ValueEventListener {
@@ -88,6 +93,7 @@ class JoinGameActivity : AppCompatActivity() {
         })
     }
 
+    // Player joins the game
     private fun joinGame() {
         databaseUsers.child(uid).child("username").addListenerForSingleValueEvent(object :
             ValueEventListener {

@@ -10,6 +10,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
+// Allows for a user to change their username or password
+
 class UserSettingsActivity : AppCompatActivity() {
 
     private var mAuth: FirebaseAuth? = null
@@ -41,19 +43,26 @@ class UserSettingsActivity : AppCompatActivity() {
         val username: String = usernameTextView.text.toString()
         val password: String = passwordTextView.text.toString()
 
+        // If both fields are empty then do nothing and display toast failure
+        // Validates password
         if (TextUtils.isEmpty(username) && !epValidator.validPassword(password)) {
             Toast.makeText(applicationContext, "Please enter a username or password!", Toast.LENGTH_LONG).show()
             return
         }
+        // If both fields are present then change both username and password and display toast success
+        // Validates password
         if (!TextUtils.isEmpty(username) && !epValidator.validPassword(password)) {
             changeUsername(username)
             changePassword(password)
             Toast.makeText(applicationContext, "Username and password successfully changed!", Toast.LENGTH_LONG).show()
         }
+        // If password field is empty then change username and display toast success
         if (!TextUtils.isEmpty(username)) {
             changeUsername(username)
             Toast.makeText(applicationContext, "Username successfully changed!", Toast.LENGTH_LONG).show()
         }
+        // If username field is empty then change password and display toast success
+        // Validates password
         if (!epValidator.validPassword(password)) {
             changePassword(password)
             Toast.makeText(applicationContext, "Password successfully changed!", Toast.LENGTH_LONG).show()
@@ -61,11 +70,13 @@ class UserSettingsActivity : AppCompatActivity() {
 
     }
 
+    // Access Firebase to change username
     private fun changeUsername(username: String) {
         val user = Player(username)
         databaseUsers.child(uid).setValue(user)
     }
 
+    // Access Firebase to change password
     private fun changePassword(password: String) {
         val user = FirebaseAuth.getInstance().currentUser!!
 

@@ -7,6 +7,8 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 
+// Waiting screen for user who is having their answers reviewed
+
 class WaitReviewActivity : AppCompatActivity() {
 
     private lateinit var databaseGames: DatabaseReference
@@ -41,6 +43,7 @@ class WaitReviewActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        // Listens to see if reviewing has been completed and if so starts the next activity
         databaseCurrentGame.child("round_num")
             .addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(p0: DataSnapshot) {

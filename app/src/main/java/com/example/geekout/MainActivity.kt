@@ -9,6 +9,8 @@ import android.widget.Button
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 
+// Main Activity for Geek-Out. Contains our four buttons New Game, Join Game, Rules, Edit Profile
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mDialog: DialogFragment

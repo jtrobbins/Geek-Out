@@ -6,6 +6,8 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 
+// Waiting screen for users who are not answering the question
+
 class WaitAnswerActivity : AppCompatActivity() {
 
     private lateinit var databaseGames: DatabaseReference
@@ -41,6 +43,7 @@ class WaitAnswerActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        // Listens to see if answering has been completed and if so starts the next activity
         databaseCurrentGame.child("round_num")
             .addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {

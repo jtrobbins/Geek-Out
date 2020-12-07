@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
+// Allows for highest bidder to answer the questions
 
 class AnswerActivity : AppCompatActivity() {
 
@@ -44,6 +45,7 @@ class AnswerActivity : AppCompatActivity() {
         highestBid = intent.getLongExtra("highest_bid", 1)
         databaseCurrentGame = databaseGames.child(code)
 
+        // Change interface to match round number and question from firebase
         databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -95,10 +97,12 @@ class AnswerActivity : AppCompatActivity() {
                     }
                 })
 
+                // Programmatically modifies interface
                 databaseCurrentGame.child("round_$roundNum").child("highest_bid").addListenerForSingleValueEvent(object :
                     ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val numAnswers = dataSnapshot.getValue(Int::class.java) as Int
+                        // Adds answer fields programmatically to match the bid number
                         for (i in 1..numAnswers) {
                             val textView = TextView(this@AnswerActivity)
                             val str = "Answer $i"
@@ -113,12 +117,14 @@ class AnswerActivity : AppCompatActivity() {
                             allEditText.add(editText)
                         }
 
+                        // Adds the submit button programmatically
                         val submitButton = Button(this@AnswerActivity)
                         submitButton.setText(R.string.submit)
                         submitButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.colorPrimary))
                         submitButton.setOnClickListener {
                             val answers = arrayListOf<String>()
                             var num = 0
+                            // Checks to make sure all fields have been filled and no two fields have the same answer
                             for (i in 0 until allEditText.size) {
                                 val strAnswer = allEditText[i].text.toString()
                                 if (strAnswer == "") {
@@ -133,6 +139,7 @@ class AnswerActivity : AppCompatActivity() {
                                     break
                                 }
                             }
+                            // pushes answers to firebase
                             if (num == numAnswers) {
                                 for (i in 0 until answers.size) {
                                     val pathNum = i + 1
@@ -143,12 +150,11 @@ class AnswerActivity : AppCompatActivity() {
 
                                 Toast.makeText(applicationContext, "Answers submitted!", Toast.LENGTH_LONG).show()
                                 databaseCurrentGame.child("round_$roundNum").child("answers_ready").setValue(true)
-                                //databaseCurrentGame.child("round_$roundNum").child("answers_reviewed").setValue(false)
 
+                                // Starts next activity once finished answering
                                 val waitReviewIntent = Intent(this@AnswerActivity, WaitReviewActivity::class.java)
                                 waitReviewIntent.putExtra("code", code)
                                 waitReviewIntent.putExtra("highest_bid", highestBid)
-                                //waitReviewIntent.putExtra("bidder_uid", uid)
                                 waitReviewIntent.putExtra("userAnswers", answers!!.toTypedArray())
                                 startActivity(waitReviewIntent)
                             }
@@ -157,6 +163,7 @@ class AnswerActivity : AppCompatActivity() {
                         }
                         linearLayout.addView(submitButton)
 
+                        // Adds the scoreboard button programmatically
                         val scoreboardButton = Button(this@AnswerActivity)
                         scoreboardButton.setText(R.string.scoreboard)
                         scoreboardButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.colorPrimary))

@@ -9,6 +9,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.util.*
 
+// Activity for creating a game
+
 class NewGameActivity : AppCompatActivity() {
 
     private var mAuth: FirebaseAuth? = null
@@ -45,6 +47,7 @@ class NewGameActivity : AppCompatActivity() {
         }
     }
 
+    // Creates the game and adds data to Firebase database
     private fun addGame() {
         databaseGames.child(code).child("in_progress").setValue(false)
         databaseGames.child(code).child("num_players").setValue(1)
@@ -61,6 +64,7 @@ class NewGameActivity : AppCompatActivity() {
                 // do nothing
             }
         })
+        // Chooses a random number for the question
         databaseQuestions.child("num_questions").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -74,6 +78,7 @@ class NewGameActivity : AppCompatActivity() {
         })
     }
 
+    // Created the Game code
     private fun createCode(): String {
         val r = Random()
         val alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -84,13 +89,6 @@ class NewGameActivity : AppCompatActivity() {
         }
         return code
     }
-
-    /*
-    override fun onBackPressed() {
-        // do nothing
-    }
-
-     */
 
     companion object {
         private const val TAG = "GeekOut:NewGameActivity"

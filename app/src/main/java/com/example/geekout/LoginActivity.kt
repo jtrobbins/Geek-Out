@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
 // reference: Lab7 - Firebase
+// Login using Firbase Authentication
 
 class LoginActivity : AppCompatActivity() {
 
@@ -36,15 +37,18 @@ class LoginActivity : AppCompatActivity() {
         val email: String = userEmail.text.toString()
         val password: String = userPassword.text.toString()
 
+        // Makes sure email input is not empty
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(applicationContext, "Please enter an email!", Toast.LENGTH_LONG).show()
             return
         }
+        // Makes sure password input is not empty
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(applicationContext, "Please enter a password!", Toast.LENGTH_LONG).show()
             return
         }
 
+        // Checks Firebase. If account exists and is successfully accessed then start main activity intent
         mAuth!!.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {

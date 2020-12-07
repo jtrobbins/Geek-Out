@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 
+// Adapter used to show the list of players in a game lobby
+
 class UserAdapter (private val context: Activity, private var players: List<Player>) :
     ArrayAdapter<Player>(context, R.layout.layout_player_list, players) {
 

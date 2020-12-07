@@ -1,6 +1,7 @@
 package com.example.geekout
 
 // reference: Lab7 - Firebase
+// Email, Password, and Game Code Validator using regex
 
 class EmailPasswordValidator {
 
@@ -31,6 +32,7 @@ class EmailPasswordValidator {
         return passwordRegex.matches(password)
     }
 
+    // Game Codes should be 4 capital letters
     fun validCode(code: String?) : Boolean {
         if (code.isNullOrEmpty()) {
             return false

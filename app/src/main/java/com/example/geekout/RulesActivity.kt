@@ -6,6 +6,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
+// Displays the rules for Geek-Out
+
 class RulesActivity: AppCompatActivity() {
 
     private lateinit var backHome: Button

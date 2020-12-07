@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
+// Bidding activity. Allows for the player to bid on the question
+
 class BidActivity : AppCompatActivity() {
 
     private lateinit var databaseGames: DatabaseReference
@@ -48,6 +50,8 @@ class BidActivity : AppCompatActivity() {
         code = intent.getStringExtra("code").toString()
         databaseCurrentGame = databaseGames.child(code)
 
+        // Allows a player to pass and no longer allows them to bid
+        // current highest bidder can not pass
         passButton.setOnClickListener {
             databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
                 ValueEventListener {
@@ -93,6 +97,8 @@ class BidActivity : AppCompatActivity() {
             })
         }
 
+        // Allows you to bid once you input a value that is higher then the current one.
+        // Saves bid numbers, highest bidder username, and highest bidder uid in Firebase
         bidButton.setOnClickListener {
             if (bidEditText.text.toString() != "") {
 
@@ -142,12 +148,14 @@ class BidActivity : AppCompatActivity() {
 
         }
 
+        // View the scoreboard
         scoreboardButton.setOnClickListener {
             val scoreboardIntent = Intent(this, ScoreboardActivity::class.java)
             scoreboardIntent.putExtra("code", code)
             startActivity(scoreboardIntent)
         }
 
+        // Changes interface to reflect round and question found in Firebase
         databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -208,6 +216,7 @@ class BidActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        // updates highest bidder and highest bid text on interface as it changes using Firebase
         databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -255,6 +264,8 @@ class BidActivity : AppCompatActivity() {
                     }
                 })
 
+                // Listens for data change
+                // Once all but the highest bidder has passed on the bid, new activity starts
                 databaseCurrentGame.child("round_$roundNum").child("num_pass").addValueEventListener(object :
                     ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {

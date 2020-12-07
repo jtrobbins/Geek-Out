@@ -9,6 +9,8 @@ import com.google.firebase.database.*
 import java.util.*
 import kotlin.Comparator
 
+// Scoreboard Activity. Shows a list of players and their current points
+
 class ScoreboardActivity : AppCompatActivity() {
 
     private lateinit var databaseGames: DatabaseReference
@@ -39,6 +41,7 @@ class ScoreboardActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        // Creates a list of players and their current points for display in a listView
         databaseCurrentGame.child("players").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 playersScore.clear()
@@ -53,6 +56,7 @@ class ScoreboardActivity : AppCompatActivity() {
                         playersScore.add(user!!)
                     }
                 }
+                // list of players and their points by most points
                 Collections.sort(playersScore,
                     Comparator { object1, object2 ->
                         object1.points.compareTo(object2.points)

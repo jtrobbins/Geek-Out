@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 import java.util.*
 
+// The game lobby activity
 
 class StartGameActivity: AppCompatActivity() {
 
@@ -39,6 +40,7 @@ class StartGameActivity: AppCompatActivity() {
         codeTextView.text = code
         databaseCurrentGame = databaseGames.child(code)
 
+        // Allows anyone to start the game if there is more than one player
         readyButton.setOnClickListener {
             databaseGames.child(code).child("num_players").addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -55,6 +57,7 @@ class StartGameActivity: AppCompatActivity() {
             })
         }
 
+        // Allows for player to visit another activity to change the amount of points needed to win
         changePoints.setOnClickListener {
             val intent = Intent(this@StartGameActivity, UpdatePointsActivity::class.java)
             intent.putExtra("code", code)
@@ -66,6 +69,8 @@ class StartGameActivity: AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
+        // Grabs the players in the current game and displays them as they join
         databaseCurrentGame.child("players").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 players.clear()
@@ -80,6 +85,7 @@ class StartGameActivity: AppCompatActivity() {
                         players.add(user!!)
                     }
                 }
+                // Order players by when they joined using a detemined player number
                 Collections.sort(players,
                     Comparator { object1, object2 ->
                         object1.player_num.compareTo(object2.player_num)
@@ -93,6 +99,7 @@ class StartGameActivity: AppCompatActivity() {
             }
         })
 
+        // If game has been started by another player or yourself, then start the game
         databaseCurrentGame.child("in_progress").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val num = dataSnapshot.getValue(Boolean::class.java) as Boolean

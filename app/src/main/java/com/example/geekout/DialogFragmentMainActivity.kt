@@ -5,6 +5,8 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 
+// Welcome message for main activity drop down
+
 class DialogFragmentMainActivity : DialogFragment() {
 
     companion object {

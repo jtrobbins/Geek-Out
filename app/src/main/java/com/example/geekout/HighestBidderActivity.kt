@@ -10,6 +10,8 @@ import com.google.firebase.database.*
 import java.util.*
 import kotlin.concurrent.schedule
 
+// Displays who won the bid
+
 class HighestBidderActivity : AppCompatActivity() {
 
     private lateinit var databaseGames: DatabaseReference
@@ -33,6 +35,7 @@ class HighestBidderActivity : AppCompatActivity() {
 
         uid = FirebaseAuth.getInstance().currentUser!!.uid
 
+        // updates interface to display who won the round from Firebase
         databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -74,6 +77,10 @@ class HighestBidderActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
+        // After 3 seconds start the next activity
+        // highest bidder moves on to answer the question
+        // everyone else moves on to waiting
         Timer().schedule(3000) {
             databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
                 ValueEventListener {

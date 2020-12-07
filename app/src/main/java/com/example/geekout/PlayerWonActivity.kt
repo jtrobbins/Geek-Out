@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.database.*
 
+// Displays who won the game
+
 class PlayerWonActivity : AppCompatActivity() {
 
     private lateinit var databaseGames: DatabaseReference
@@ -29,6 +31,7 @@ class PlayerWonActivity : AppCompatActivity() {
         databaseGames = FirebaseDatabase.getInstance().getReference("games")
         databaseCurrentGame = databaseGames.child(code)
 
+        // retrieves winner from firebase and updates text
         databaseCurrentGame.child("winner").addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 val uid = p0.value as String
@@ -53,6 +56,7 @@ class PlayerWonActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        // return to main activity once the screen is clicked
         mLayoutView.setOnClickListener {
             val intent = Intent(this@PlayerWonActivity, MainActivity::class.java)
             startActivity(intent)

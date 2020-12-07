@@ -10,6 +10,8 @@ import com.google.firebase.database.*
 import java.util.*
 import kotlin.concurrent.schedule
 
+// Starts a new round
+
 class NewRoundActivity : AppCompatActivity() {
 
     private lateinit var databaseGames: DatabaseReference
@@ -30,6 +32,8 @@ class NewRoundActivity : AppCompatActivity() {
         databaseCurrentGame = databaseGames.child(code)
         databaseQuestions = FirebaseDatabase.getInstance().getReference("questions")
 
+        // updates round number to reflect round on firebase
+        // sets initial values for the round in firebase
         databaseCurrentGame.child("round_num").addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -88,6 +92,7 @@ class NewRoundActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        // after 3 seconds then start bid activity
         Timer().schedule(3000) {
             val bidIntent = Intent(this@NewRoundActivity, BidActivity::class.java)
             bidIntent.putExtra("code", code)

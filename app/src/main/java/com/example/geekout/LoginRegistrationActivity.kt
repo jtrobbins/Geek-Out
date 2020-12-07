@@ -6,6 +6,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 // reference: Lab7 - Firebase
+// Choose to login or register
 
 class LoginRegistrationActivity : AppCompatActivity() {
 

@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 
+// Adapter used to show player and points in the scoreboard activity
+
 class PlayerScoreAdapter (private val context: Activity, private var players: List<Player>) :
     ArrayAdapter<Player>(context, R.layout.layout_player_score_list, players) {
 

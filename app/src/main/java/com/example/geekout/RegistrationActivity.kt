@@ -12,6 +12,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
 // reference: Lab7 - Firebase
+// Register an account using Firebase Authentication
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -45,19 +46,23 @@ class RegistrationActivity : AppCompatActivity() {
         val username: String = usernameTextView.text.toString()
         val password: String = passwordTextView.text.toString()
 
+        // Validate email
         if (!epValidator.validEmail(email)) {
             Toast.makeText(applicationContext, "Please enter an email!", Toast.LENGTH_LONG).show()
             return
         }
+        // Makes sure username field is not empty
         if (TextUtils.isEmpty(username)) {
             Toast.makeText(applicationContext, "Please enter a username!", Toast.LENGTH_LONG).show()
             return
         }
+        // Validate password
         if (!epValidator.validPassword(password)) {
             Toast.makeText(applicationContext, "Please enter a password!", Toast.LENGTH_LONG).show()
             return
         }
 
+        // Registers using Firebase
         val x = mAuth!!.createUserWithEmailAndPassword(email, password)
 
         x.addOnCompleteListener { task ->
@@ -71,6 +76,7 @@ class RegistrationActivity : AppCompatActivity() {
         }
     }
 
+    // Adds user to Firebase Database
     private fun addUser(username: String) {
         uid = FirebaseAuth.getInstance().currentUser!!.uid
         val user = Player(username)
