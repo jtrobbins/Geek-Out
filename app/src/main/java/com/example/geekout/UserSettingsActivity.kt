@@ -51,7 +51,7 @@ class UserSettingsActivity : AppCompatActivity() {
         }
         // If both fields are present then change both username and password and display toast success
         // Validates password
-        if (!TextUtils.isEmpty(username) && !epValidator.validPassword(password)) {
+        if (!TextUtils.isEmpty(username) && epValidator.validPassword(password)) {
             changeUsername(username)
             changePassword(password)
             Toast.makeText(applicationContext, "Username and password successfully changed!", Toast.LENGTH_LONG).show()
@@ -63,7 +63,7 @@ class UserSettingsActivity : AppCompatActivity() {
         }
         // If username field is empty then change password and display toast success
         // Validates password
-        if (!epValidator.validPassword(password)) {
+        if (epValidator.validPassword(password)) {
             changePassword(password)
             Toast.makeText(applicationContext, "Password successfully changed!", Toast.LENGTH_LONG).show()
         }
