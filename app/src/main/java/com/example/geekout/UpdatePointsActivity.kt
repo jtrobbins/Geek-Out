@@ -72,5 +72,22 @@ class UpdatePointsActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        databaseCurrentGame.child("winning_points")
+            .addValueEventListener(object: ValueEventListener {
+                override fun onDataChange(p0: DataSnapshot) {
+                    val currWin = p0.value as Long
+                    mCurrPoints.text = currWin.toString()
+                }
+
+                override fun onCancelled(p0: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+
+    }
+
 
 }
